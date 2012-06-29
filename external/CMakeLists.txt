@@ -15,3 +15,13 @@ ExternalProject_Add(
     INSTALL_COMMAND source ${CMAKE_SOURCE_DIR}/external/install_gtest.sh ${CMAKE_SOURCE_DIR}
 )
 
+ExternalProject_Add(
+    cfitsio
+    URL ${CMAKE_SOURCE_DIR}/external/cfitsio3300.tar.gz
+    BUILD_IN_SOURCE 1
+    PREFIX ${CMAKE_SOURCE_DIR}/build
+    CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/build/src/cfitsio/configure --prefix=${CMAKE_SOURCE_DIR}/local
+    BUILD_COMMAND make shared
+    INSTALL_COMMAND make install
+)
+
