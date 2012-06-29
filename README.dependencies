@@ -1,0 +1,6 @@
+Assumes the following products are externally available
+
+-- PETSc
+-- FFTW
+-- GSL
+
