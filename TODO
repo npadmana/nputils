@@ -3,7 +3,7 @@ Add in external projects :
   -- fftw
   -- petsc
   -- cfitsio
-  -- eigen
+  -- gtest
 
 GSL wrappers
 cosmology codes
