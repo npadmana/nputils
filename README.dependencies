@@ -1,6 +1,6 @@
 Assumes the following products are externally available
 
--- PETSc
--- FFTW
--- GSL
+-- PETSc ( assumes that the root directory is defined by $PETSC_DIR)
+-- FFTW ( assumes that the root directory is defined by $FFTW_DIR)
+-- GSL  ( assumes that the root directory is set by $GSL_DIR)
 
