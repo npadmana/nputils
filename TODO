@@ -1,3 +1,10 @@
+Add in external projects :
+  -- gsl
+  -- fftw
+  -- petsc
+  -- cfitsio
+  -- eigen
+
 GSL wrappers
 cosmology codes
 PM 
