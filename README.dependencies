@@ -1,6 +1,5 @@
 Assumes the following products are externally available
 
--- PETSc ( assumes that the root directory is defined by $PETSC_DIR)
--- FFTW ( assumes that the root directory is defined by $FFTW_DIR)
--- GSL  ( assumes that the root directory is set by $GSL_DIR)
-
+A relatively modern gcc (> 4.5)
+CMake (>2.8)
+Openmpi 
