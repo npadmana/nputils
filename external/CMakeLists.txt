@@ -26,6 +26,17 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
+    ccfits
+    URL ${CMAKE_SOURCE_DIR}/external/CCfits-2.4.tar.gz
+    BUILD_IN_SOURCE 1
+    PREFIX ${CMAKE_SOURCE_DIR}/build
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure --with-cfitsio=${CMAKE_SOURCE_DIR}/local --prefix=${CMAKE_SOURCE_DIR}/local
+    BUILD_COMMAND make 
+    INSTALL_COMMAND make install
+)
+
+
+ExternalProject_Add(
     gsl
     URL ${CMAKE_SOURCE_DIR}/external/gsl-1.15.tar.gz
     BUILD_IN_SOURCE 1
