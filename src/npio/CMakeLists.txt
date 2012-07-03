@@ -2,10 +2,10 @@
 add_executable(fits_liststruc fits_liststruc.c)
 target_link_libraries(fits_liststruc cfitsio m)
 
-add_executable(fits_listhead fits_liststruc.c)
+add_executable(fits_listhead fits_listhead.c)
 target_link_libraries(fits_listhead cfitsio m)
 
-add_executable(fits_copy fits_liststruc.c)
+add_executable(fits_copy fits_copy.c)
 target_link_libraries(fits_copy cfitsio m)
 
 
