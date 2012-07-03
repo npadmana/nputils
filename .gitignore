@@ -1,5 +1,9 @@
+# Directories
 doc
 build
 local
+install
+
+# Eclipse project settings
 .project
 .cproject
