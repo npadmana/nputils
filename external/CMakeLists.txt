@@ -89,4 +89,9 @@ ExternalProject_Add_Step(petsc builddebug
     DEPENDEES configdebug
 )
 
+ExternalProject_Add(
+    mathgl
+    URL ${CMAKE_SOURCE_DIR}/external/mathgl-2.0.2.tar.gz
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/local
+)
 
