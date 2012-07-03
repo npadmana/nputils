@@ -12,7 +12,7 @@ ExternalProject_Add(
     gtest-1.6.0
     URL ${CMAKE_SOURCE_DIR}/external/gtest-1.6.0.zip
     PREFIX ${CMAKE_SOURCE_DIR}/build
-    INSTALL_COMMAND source ${CMAKE_SOURCE_DIR}/external/install_gtest.sh <SOURCE_DIR> <BINARY_DIR>
+    INSTALL_COMMAND source ${CMAKE_SOURCE_DIR}/external/install_gtest.sh ${CMAKE_SOURCE_DIR} <SOURCE_DIR> <BINARY_DIR>
 )
 
 ExternalProject_Add(
