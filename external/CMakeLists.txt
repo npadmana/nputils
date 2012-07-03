@@ -12,7 +12,7 @@ ExternalProject_Add(
     gtest-1.6.0
     URL ${CMAKE_SOURCE_DIR}/external/gtest-1.6.0.zip
     PREFIX ${CMAKE_SOURCE_DIR}/build
-    INSTALL_COMMAND source ${CMAKE_SOURCE_DIR}/external/install_gtest.sh ${CMAKE_SOURCE_DIR}
+    INSTALL_COMMAND source ${CMAKE_SOURCE_DIR}/external/install_gtest.sh <SOURCE_DIR> <BINARY_DIR>
 )
 
 ExternalProject_Add(
@@ -20,7 +20,7 @@ ExternalProject_Add(
     URL ${CMAKE_SOURCE_DIR}/external/cfitsio3300.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
-    CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/build/src/cfitsio/configure --prefix=${CMAKE_SOURCE_DIR}/local
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${CMAKE_SOURCE_DIR}/local
     BUILD_COMMAND make shared
     INSTALL_COMMAND make install
 )
@@ -43,7 +43,7 @@ ExternalProject_Add(
     URL ${CMAKE_SOURCE_DIR}/external/gsl-1.15.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
-    CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/build/src/gsl/configure --prefix=${CMAKE_SOURCE_DIR}/local
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${CMAKE_SOURCE_DIR}/local
     BUILD_COMMAND make 
     INSTALL_COMMAND make install
 )
@@ -53,7 +53,7 @@ ExternalProject_Add(
     URL ${CMAKE_SOURCE_DIR}/external/fftw-3.3.2.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
-    CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/build/src/fftw/configure --prefix=${CMAKE_SOURCE_DIR}/local --enable-mpi --enable-shared --disable-fortran
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${CMAKE_SOURCE_DIR}/local --enable-mpi --enable-shared --disable-fortran
     BUILD_COMMAND make 
     INSTALL_COMMAND make install
 )
