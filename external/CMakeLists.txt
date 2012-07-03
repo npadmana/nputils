@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 ExternalProject_Add(
-    Eigen
+    Eigen-3.1
     URL ${CMAKE_SOURCE_DIR}/external/eigen-eigen3_1_0-ca142d0540d3.tar.gz
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/local
     BUILD_COMMAND make install
@@ -9,14 +9,14 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-    gtest
+    gtest-1.6.0
     URL ${CMAKE_SOURCE_DIR}/external/gtest-1.6.0.zip
     PREFIX ${CMAKE_SOURCE_DIR}/build
     INSTALL_COMMAND source ${CMAKE_SOURCE_DIR}/external/install_gtest.sh ${CMAKE_SOURCE_DIR}
 )
 
 ExternalProject_Add(
-    cfitsio
+    cfitsio-3.3
     URL ${CMAKE_SOURCE_DIR}/external/cfitsio3300.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
@@ -26,11 +26,12 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-    CCfits
-    DEPENDS cfitsio
+    CCfits-2.4
+    DEPENDS cfitsio-3.3
     URL ${CMAKE_SOURCE_DIR}/external/CCfits-2.4.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/build/src/CCfits
     CONFIGURE_COMMAND <SOURCE_DIR>/configure --with-cfitsio=${CMAKE_SOURCE_DIR}/local --prefix=${CMAKE_SOURCE_DIR}/local
     BUILD_COMMAND make 
     INSTALL_COMMAND make install
@@ -38,7 +39,7 @@ ExternalProject_Add(
 
 
 ExternalProject_Add(
-    gsl
+    gsl-1.15
     URL ${CMAKE_SOURCE_DIR}/external/gsl-1.15.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
@@ -48,7 +49,7 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-    fftw
+    fftw-3.3.2
     URL ${CMAKE_SOURCE_DIR}/external/fftw-3.3.2.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
@@ -58,7 +59,7 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-    boost
+    boost-1.50.0
     URL ${CMAKE_SOURCE_DIR}/external/boost_1_50_0.tar.gz
     BUILD_IN_SOURCE 1
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/local/boost_1_50_0
@@ -68,7 +69,7 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-    petsc
+    petsc-3.3.p1
     URL ${CMAKE_SOURCE_DIR}/external/petsc-3.3-p1.tar.gz
     BUILD_IN_SOURCE 1
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/local/petsc-3.3-p1
@@ -90,7 +91,7 @@ ExternalProject_Add_Step(petsc builddebug
 )
 
 ExternalProject_Add(
-    mathgl
+    mathgl-2.0.2
     URL ${CMAKE_SOURCE_DIR}/external/mathgl-2.0.2.tar.gz
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/local
 )
