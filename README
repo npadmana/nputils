@@ -1,0 +1,13 @@
+Collection of C/C++/Python/R code I find useful
+
+To install : 
+
+First, make sure you have the dependencies in README.dependencies
+
+you will need to 
+	
+  mkdir -p build install local 
+  cd build
+  cmake ..
+  make all install
+  

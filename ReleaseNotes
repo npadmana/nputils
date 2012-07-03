@@ -1,0 +1,16 @@
+
+npio :
+  -- added in executables fits_copy, fits_listhead and fits_liststruc
+
+
+External dependecies
+-- Initial set up  
+-- cfitsio v3.3
+-- CCfits v2.4
+-- boost 1.50.0
+-- eigen 3.1.0
+-- fftw 3.3.2
+-- gsl 1.15
+-- gtest (Google test) 1.6
+-- petsc-3.3-p1
+-- mathgl-2.0.2
