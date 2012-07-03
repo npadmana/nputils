@@ -26,7 +26,8 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-    ccfits
+    CCfits
+    DEPENDS cfitsio
     URL ${CMAKE_SOURCE_DIR}/external/CCfits-2.4.tar.gz
     BUILD_IN_SOURCE 1
     PREFIX ${CMAKE_SOURCE_DIR}/build
