@@ -78,13 +78,13 @@ ExternalProject_Add(
     INSTALL_COMMAND ""
 )
 
-ExternalProject_Add_Step(petsc configdebug
+ExternalProject_Add_Step(petsc-3.3.p1 configdebug
     WORKING_DIRECTORY <SOURCE_DIR>
     COMMAND <SOURCE_DIR>/configure --with-petsc-arch=cxx-debug --with-cc=mpicc --with-cxx=mpicxx --with-fc=0 --with-debugging=1 --with-clanguage=cxx --with-shared-libraries --with-64-bit-indices --download-f2cblaslapack=1
     DEPENDEES build
 )
 
-ExternalProject_Add_Step(petsc builddebug
+ExternalProject_Add_Step(petsc-3.3.p1 builddebug
     WORKING_DIRECTORY <SOURCE_DIR>
     COMMAND make PETSC_DIR=<SOURCE_DIR> PETSC_ARCH=cxx-debug all
     DEPENDEES configdebug
