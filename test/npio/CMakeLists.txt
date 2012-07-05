@@ -1,0 +1,4 @@
+#executables
+add_executable(fits_make_test_bintable fits_make_test_bintable.cpp)
+target_link_libraries(fits_make_test_bintable CCfits cfitsio m)
+
