@@ -23,13 +23,13 @@
 // in the compilation target.
 
 
-#include <CCfits/CCfits>
 #include <cmath>
 #include <iostream>
 #include <vector>
 #include <string>
 #include <memory>
 #include <sstream>
+#include <CCfits/CCfits>
 // The library is enclosed in a namespace.
 
 using namespace std;
@@ -71,7 +71,7 @@ int writeBinary() {
     try
     {
 
-        const string fileName("atestfil.fit");
+        const string fileName("!atestfil.fit");
         pFits.reset( new FITS(fileName,Write) );
     }
     catch (CCfits::FITS::CantOpen&)
@@ -82,14 +82,15 @@ int writeBinary() {
     // Define the data structures
     unsigned long rows(3);
     string hduName("TABLE_BINARY");
-    vector<string> colName(1,"");
-    vector<string> colForm(1,"");
-    vector<string> colUnit(1,"");
+    vector<string> colName(4,"");
+    vector<string> colForm(4,"");
+    vector<string> colUnit(4,"");
 
     // Now fill in the column descriptions
-    colName[0] = "int32";
-    colForm[0] = "J";
-
+    colName[0] = "int32"; colForm[0] = "J";
+    colName[1] = "float"; colForm[1] = "E";
+    colName[2] = "double"; colForm[2] = "D";
+    colName[3] = "int64"; colForm[3] = "K";
 
     // Now create an appropriate HDU
     Table* newTable = pFits->addTable(hduName,rows,colName,colForm,colUnit);
@@ -100,6 +101,25 @@ int writeBinary() {
     {
     	vector<int> vec(3, 96); // Simple fill in
         newTable->column(colName[0]).write(vec,1);
+    }
+
+    // column 1
+    {
+    	vector<float> vec(3, 2.726);
+    	newTable->column(colName[1]).write(vec, 1);
+    }
+
+    // column 2
+    {
+    	vector<double> vec(3, 3.1415926);
+    	newTable->column(colName[2]).write(vec, 1);
+    }
+
+    // column 4
+    {
+    	vector<int64_t> vec(3, -32);
+    	vec[2] = 10;
+    	newTable->column(colName[3]).write(vec, 1);
     }
 
 
