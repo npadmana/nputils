@@ -1,0 +1,2 @@
+keepcols 'plate fiberid mjd chunk plug_ra plug_dec z z_err zwarning z*noqso boss_target1 specprimary sn_median'
+explodeall

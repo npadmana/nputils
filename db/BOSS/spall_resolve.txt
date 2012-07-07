@@ -1,0 +1,2 @@
+keepcols 'plate fiberid mjd calib_status resolve_status thing_id ifield balkan_id nobserve ndetect nedge score'
+explodeall

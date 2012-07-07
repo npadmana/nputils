@@ -1,0 +1,2 @@
+keepcols 'plate fiberid mjd run rerun camcol field id objc_type objc_flags* ra dec'
+explodeall
