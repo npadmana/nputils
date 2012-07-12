@@ -3,19 +3,15 @@
 TARGETDIR=/scratch/padmanabhan/BOSS/target
 
 STILTLOC=/home/np274/myWork/nputils/stilts
-STILTARGS1='omode=tosql protocol=postgresql host=devel db=sdss'
+STILTARGS1='omode=tosql protocol=postgresql host=localhost db=sdss'
 STILTUSER='user=np274 password=postgres'
 JDBC='-Djdbc.drivers=org.postgresql.Driver'
 
 # First time need to dropcreate, after that we append
 
-FILELIST=`find $TARGETDIR -type f -iname *.fits`
-FIRST=TRUE
+FILELIST=`find $TARGETDIR -type f -iname *lrg*.fits`
 
+psql -f galtargetmeta.sql sdss
 for ii in $FILELIST; do
-  if $FIRST; then 
-    echo $STILTLOC/stilts $JDBC -verbose tpipe in=$SPALLDIR/spAll-v$SPALLVER.fits dbtable=targetmeta write=dropcreate $STILTARGS1 $STILTUSER 
-  else 
-    echo $STILTLOC/stilts $JDBC -verbose tpipe in=$SPALLDIR/spAll-v$SPALLVER.fits dbtable=targetmeta write=append $STILTARGS1 $STILTUSER 
-  fi
+    $STILTLOC/stilts $JDBC -verbose tpipe in=$ii dbtable=galtargetmeta write=append $STILTARGS1 $STILTUSER cmd="keepcols 'TARGET* *_V PHOTO_*'"
 done
