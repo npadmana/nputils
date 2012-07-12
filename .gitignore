@@ -11,3 +11,4 @@ install
 
 # VIM temporaries
 *swp
+.Rproj.user
