@@ -1,4 +1,4 @@
-boss.Flagname2val <- function (names, flagdefs) {
+boss.Flagname2Val <- function (names, flagdefs) {
   # Convert flag names into a bitmask
   #
   # Args :
