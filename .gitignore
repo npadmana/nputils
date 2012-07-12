@@ -7,3 +7,7 @@ install
 # Eclipse project settings
 .project
 .cproject
+.settings
+
+# VIM temporaries
+*swp
