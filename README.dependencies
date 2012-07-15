@@ -4,3 +4,4 @@ A relatively modern gcc (> 4.5)
 CMake (>2.8)
 Openmpi 
 R (with packages Rcpp, RInline, ...)
+Doxygen (to build documentation)
