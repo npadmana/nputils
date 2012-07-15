@@ -17,9 +17,19 @@
  */
 class Spline {
 private :
-	gsl_spline * sp;
+	// GSL members
+	gsl_interp * sp;
 	gsl_interp_accel * acc;
+	const gsl_interp_type *interptype;
+
+	// Cache x and y
+	std::vector<double> _x, _y;
+
+	// Helper initialization function
+	void init();
 public :
+	Spline() : sp(NULL), acc(NULL) {};
+
 	/** \brief Constructor
 	 *
 	 *  @param x (vector<double>) -- the x parameter
@@ -33,8 +43,13 @@ public :
 	 *           gsl_interp_akima
 	 *           gsl_interp_akima_periodic
 	 */
-	Spline(std::vector<double> x, std::vector<double> y, const gsl_interp_type *sptype = gsl_interp_cspline);
+	Spline(const std::vector<double> x, const std::vector<double> y,
+			const gsl_interp_type *sptype = gsl_interp_cspline);
 	~Spline();
+
+	// Specify copy and assignment constructors
+	Spline(const Spline& sp1);
+	Spline& operator=(const Spline& sp1);
 
 	/** \brief Evaluate the spline at x
 	 *
