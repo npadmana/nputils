@@ -12,3 +12,7 @@ install
 # VIM temporaries
 *swp
 .Rproj.user
+
+
+# OS X specific files
+.DS_Store
