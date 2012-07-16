@@ -30,7 +30,7 @@ private :
 public :
 	Spline() : sp(NULL), acc(NULL) {};
 
-	/** \brief Constructor
+	/** Constructor.
 	 *
 	 *  @param x (vector<double>) -- the x parameter
 	 *  @param y (vector<double>) -- the y parameter
@@ -45,13 +45,17 @@ public :
 	 */
 	Spline(const std::vector<double> x, const std::vector<double> y,
 			const gsl_interp_type *sptype = gsl_interp_cspline);
+
+	/// Destructor
 	~Spline();
 
-	// Specify copy and assignment constructors
+	/// Copy constructor
 	Spline(const Spline& sp1);
+
+	/// Assignment operator
 	Spline& operator=(const Spline& sp1);
 
-	/** \brief Evaluate the spline at x
+	/** Evaluate the spline at x.
 	 *
 	 *  @param x (double) -- location to evaluate spline at
 	 */
