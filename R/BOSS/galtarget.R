@@ -13,18 +13,30 @@ boss.ComputeAuxColors <- function(data) {
   # Computes the BOSS galaxy TS auxiliary colors cperp, cpar and dperp
   #
   # Args :
-  #   data : a data frame with MODELFLUX_[2,3,4] and EXTINCTION_[2,3,4] 
+  #   data : a data table/frame with MODELFLUX_[2,3,4] and EXTINCTION_[2,3,4] 
   #      The naming conventions come from STILTS loading an SQL database
   #
   # Returns :
-  #   A modified data frame with cperp, cpar, and dperp
-  g <- boss.Flux2Mag(data$MODELFLUX_2) - data$EXTINCTION_2
-  r <- boss.Flux2Mag(data$MODELFLUX_3) - data$EXTINCTION_3
-  i <- boss.Flux2Mag(data$MODELFLUX_4) - data$EXTINCTION_4
-  dperp <- (r-i) - (g-r)/8.0
-  cperp <- (r-i) - (g-r)/4.0 - 0.18
-  cpar <- 0.7*(g-r) + 1.2*(r-i-0.18)
-  return(cbind(data, dperp, cperp, cpar))
+  #   A modified data table/frame with cperp, cpar, and dperp
+  #
+  # NOTE : This is not necessarily memory efficient. But it's designed to 
+  # be easy to read.
+  within(data,{
+    
+    # Model colors
+    g <- boss.Flux2Mag(MODELFLUX_2) - EXTINCTION_2
+    r <- boss.Flux2Mag(MODELFLUX_3) - EXTINCTION_3
+    i <- boss.Flux2Mag(MODELFLUX_4) - EXTINCTION_4
+    gr <- g-r
+    ri <- r-i
+    dperp <- (ri) - (gr)/8.0
+    cperp <- (ri) - (gr)/4.0 - 0.18
+    cpar <- 0.7*(gr) + 1.2*(ri-0.18)
+    
+    # Fluxes and magnitudes
+    rcmodel <- boss.Flux2Mag(CMODELFLUX_3) - EXTINCTION_3
+    icmodel <- boss.Flux2Mag(CMODELFLUX_4) - EXTINCTION_4
+  })
 }
 
 boss.SelectCMASS <- function(data) {
@@ -38,9 +50,7 @@ boss.SelectCMASS <- function(data) {
   #    A new data frames with is.CMASS appended to it.
   #
   # TODO : ONLY THE SLIDING CMASS CUT HAS BEEN IMPLEMENTED
-  icmodel <- boss.Flux2Mag(data$CMODELFLUX_4) - data$EXTINCTION_4
-  is.CMASS <- icmodel < (19.86 + 1.6*(data$dperp-0.8))
-  return(cbind(data, is.CMASS))
+  data[, is.CMASS := icmodel < (19.86 + 1.6*($dperp-0.8))]
 }
 
 boss.SelectLOWZ <- function(data) {
@@ -54,10 +64,8 @@ boss.SelectLOWZ <- function(data) {
   #    A new data frames with is.LOWZ appended to it.
   #
   # TODO : ONLY THE CPERP AND CPAR CUTS HAVE BEEN IMPLEMENTED
-  rcmodel <- boss.Flux2Mag(data$CMODELFLUX_3) - data$EXTINCTION_3
-  is.LOWZ <- rcmodel < (13.5 + data$cpar/0.3)
-  is.LOWZ <- is.LOWZ & (abs(data$cperp) < 0.2)
-  return(cbind(data, is.LOWZ))
+  data[, is.LOWZ := rcmodel < (13.5 + cpar/0.3)]
+  data[, is.LOWZ := is.LOWZ & (abs(cperp) < 0.2)]
 }
 
 boss.SelectSPARSE <- function(data) {
@@ -71,10 +79,8 @@ boss.SelectSPARSE <- function(data) {
   #    A new data frames with is.SPARSE appended to it.
   #
   # TODO : ONLY THE SLIDING CUT HAS BEEN IMPLEMENTED
-  icmodel <- boss.Flux2Mag(data$CMODELFLUX_4) - data$EXTINCTION_4
-  is.SPARSE <- icmodel >= (19.86 + 1.6*(data$dperp-0.8))
-  is.SPARSE <- is.SPARSE & (icmodel < (20.14 + 1.6*(data$dperp-0.8)))
-  return(cbind(data, is.SPARSE))
+  data[, is.SPARSE := icmodel >= (19.86 + 1.6*(dperp-0.8))]
+  data[, is.SPARSE := is.SPARSE & (icmodel < (20.14 + 1.6*(dperp-0.8)))]
 }
 
 boss.galTypes <- list()
