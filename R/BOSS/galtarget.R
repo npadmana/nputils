@@ -50,7 +50,7 @@ boss.SelectCMASS <- function(data) {
   #    A new data frames with is.CMASS appended to it.
   #
   # TODO : ONLY THE SLIDING CMASS CUT HAS BEEN IMPLEMENTED
-  data[, is.CMASS := icmodel < (19.86 + 1.6*($dperp-0.8))]
+  data[, is.CMASS := icmodel < (19.86 + 1.6*(dperp-0.8))]
 }
 
 boss.SelectLOWZ <- function(data) {
