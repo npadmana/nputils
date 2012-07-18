@@ -105,7 +105,7 @@ boss.SelectSPARSE <- function(data) {
   #    A new data frames with is.SPARSE appended to it.
   #
   # TODO : ONLY THE SLIDING CUT HAS BEEN IMPLEMENTED
-  if (!("is.CMASS" %in names(data))) {
+  if (!("is.CMASS" %in% names(data))) {
     data <- boss.SelectCMASS(data)
   }
   data[, is.SPARSE := !(is.CMASS) & boss.SelectCMASS_Helper(data, intercept=20.14)]
