@@ -60,7 +60,7 @@ boss.SelectCMASS_Helper <- function(data, intercept=19.86) {
     is.CMASS <- is.CMASS & (dperp > 0.55)
     is.CMASS <- is.CMASS & (icmodel > 17.5) & (icmodel < 19.9)
     is.CMASS <- is.CMASS & ((ipsf-i) > (0.2 + 0.2*(20.0-i)))
-    is.CMASS <- is.CMASS & ((zpsf-z) > 9.125*0.46*z)
+    is.CMASS <- is.CMASS & ((zpsf-z) > 9.125 - 0.46*z)
     is.CMASS <- is.CMASS & (ri < 2)
     is.CMASS <- is.CMASS & (ifib2 < 21.5)
     # Eliminate NA
