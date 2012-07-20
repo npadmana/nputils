@@ -16,7 +16,7 @@
  * The particle data are stored in an array of auto_ptrs of CppPetscVecs.
  * The template parameter nvec sets the number of vectors.
  *
- * We disable copy constructors and
+ * We disable copy constructors and assignment operators
  *
  */
 template <int nvec>
