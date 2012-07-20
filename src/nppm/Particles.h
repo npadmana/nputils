@@ -10,6 +10,7 @@
 
 #include <memory>
 #include "cpppetsc.h"
+#include "npRandom.h"
 
 /** A distributed particle class
  *
@@ -56,6 +57,26 @@ public:
 		npart = _npart;
 		for (int ii=0; ii < nvec; ++ii) {
 			(ptrs[ii]).reset(new CppPetscVec(npart, nlocal));
+		}
+	}
+
+	/** Randomly fill with values from [0, 1)
+	 *
+	 * This is mostly for testing. Note that this fills all the vectors
+	 * the same way.
+	 */
+	void fillRandom() {
+		int rank;
+		MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+		npRandom rr(99+100*rank);
+		for (int ii=0; ii < nvec; ++ii) {
+			PetscScalar *x;
+			PetscInt lo, hi;
+			ptrs[ii]->getOwnershipRange(lo,hi);
+			x = ptrs[ii]->get();
+			for (PetscInt jj=lo; jj != hi; ++jj) x[jj-lo] = rr();
+			ptrs[ii]->restore(x);
 		}
 	}
 

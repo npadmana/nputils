@@ -24,6 +24,13 @@ TEST(ParticlesTest, TestAlloc3) {
 	}
 }
 
+TEST(ParticlesTest, TestRandom) {
+	EXPECT_NO_THROW({
+		Particles<3> p1(100);
+		p1.fillRandom();
+	});
+}
+
 
 int main(int argc, char **argv) {
 	safeCall(PetscInitialize(&argc,&argv,(char *) 0, PETSC_NULL), "Error initializing");
