@@ -36,22 +36,17 @@ public :
 	 * @param ntot (PetscInt) total number of particles
 	 * @param nlocal (PetscInt) local number of particles [PETSC_DECIDE]
 	 */
-	CppPetscVec(PetscInt ntot, PetscInt nlocal=PETSC_DECIDE)
-	   { safeCall(VecCreateMPI(PETSC_COMM_WORLD, nlocal, ntot, &data),
-			   "Error allocating vector"); };
+	CppPetscVec(PetscInt ntot, PetscInt nlocal=PETSC_DECIDE);
 
 	/// Destructor
-	~CppPetscVec() {if (data != PETSC_NULL) safeCall(VecDestroy(&data),
-			"Error destroying vector");};
+	~CppPetscVec();
 
 	/** Get the ownership range
 	 *
 	 * @param lo (PetscInt) -- the lower range returned
 	 * @param hi (PetscInt) -- the upper range returned
 	 */
-	void getOwnershipRange(PetscInt &lo, PetscInt &hi) {
-		VecGetOwnershipRange(data, &lo, &hi);
-	}
+	void getOwnershipRange(PetscInt &lo, PetscInt &hi);
 
 	/** Get array
 	 *
@@ -59,11 +54,7 @@ public :
 	 *
 	 * @return PetscScalar * pointer to the data array
 	 */
-	PetscScalar * get() {
-		PetscScalar *_x;
-		VecGetArray(data, &_x);
-		return _x;
-	}
+	PetscScalar * get();
 
 	/** Restore array
 	 *
@@ -71,9 +62,7 @@ public :
 	 *
 	 * @param x (PetscScalar*) -- the pointer from get()
 	 */
-	void restore(PetscScalar *x) {
-		VecRestoreArray(data, &x);
-	}
+	void restore(PetscScalar *x);
 
 	/** Set to a scalar value
 	 *
@@ -81,9 +70,7 @@ public :
 	 *
 	 * @param x (PetscScalar) -- value to set to
 	 */
-	void operator= (PetscScalar x) {
-		VecSet(data, x);
-	}
+	void operator= (PetscScalar x);
 
 
 private :
