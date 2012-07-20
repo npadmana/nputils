@@ -1,6 +1,13 @@
 #include "gtest/gtest.h"
 #include "Particles.h"
 
+TEST(PeriodicTest, Test1) {
+	EXPECT_DOUBLE_EQ(0.5, periodic(0.5, 1.0));
+	EXPECT_DOUBLE_EQ(0.5, periodic(0.5));
+	EXPECT_DOUBLE_EQ(1.0, periodic(3.0, 2.0));
+	EXPECT_DOUBLE_EQ(1.9, periodic(-0.1, 2.0));
+}
+
 TEST(ParticlesTest, TestAlloc1) {
 	EXPECT_NO_THROW({
 		Particles<3> p1(100);

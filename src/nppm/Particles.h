@@ -12,6 +12,14 @@
 #include "cpppetsc.h"
 #include "npRandom.h"
 
+/** Wrap things around in a periodic box
+ *
+ * @param x (double) -- value
+ * @param L (double) -- dimension size
+ * @return periodically wrapped coordinate
+ */
+double periodic(double x, double L=1.0);
+
 /** A distributed particle class
  *
  * The particle data are stored in an array of auto_ptrs of CppPetscVecs.
