@@ -72,6 +72,11 @@ public :
 	 */
 	void operator= (PetscScalar x);
 
+	/** Return the global size
+	 *
+	 * @return nn (PetscInt)
+	 */
+	PetscInt size();
 
 private :
 	// disable copy constructor and assignment operator

@@ -25,3 +25,9 @@ void CppPetscVec::restore(PetscScalar *x) {
 void CppPetscVec::operator= (PetscScalar x) {
 	VecSet(data, x);
 }
+
+PetscInt CppPetscVec::size() {
+	PetscInt n;
+	VecGetSize(data, &n);
+	return n;
+}
