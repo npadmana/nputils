@@ -8,7 +8,7 @@
 #include "npRandom.h"
 
 npRandom::npRandom(unsigned long int seed) {
-	  gsl_rng *ran = gsl_rng_alloc(gsl_rng_mt19937);
+	  ran = gsl_rng_alloc(gsl_rng_mt19937);
 	  gsl_rng_set(ran, seed);
 }
 
