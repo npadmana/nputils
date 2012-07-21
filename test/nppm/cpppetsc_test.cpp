@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "cpppetsc.h"
+#include "nppm_algorithms.h"
 
 TEST(CppPetsc, AllocNull) {
 	EXPECT_NO_THROW({
@@ -21,7 +22,7 @@ TEST(CppPetsc, Set) {
 	v1.getOwnershipRange(lo, hi);
 	PetscScalar *x = v1.get();
 	for (PetscInt ii=lo; ii != hi; ++ii) EXPECT_DOUBLE_EQ(3.14, x[ii-lo]);
-	v1.restore(x);
+	v1.restore(&x);
 }
 
 TEST(CppPetsc, CopyConstructor) {
@@ -60,6 +61,16 @@ TEST(CppPetsc, SelfAssignment) {
 		CppPetscVec v1(10);
 		v1 = v1;
 	});
+}
+
+TEST(npTranform, Test1) {
+	CppPetscVec v1(10), v2(10);
+	v1 = 3.14;
+	npForEach(v2, [](PetscScalar& x){x=3.14;});
+
+	PetscBool flg;
+	VecEqual(v1.data, v2.data, &flg);
+	EXPECT_EQ(PETSC_TRUE, flg);
 }
 
 
