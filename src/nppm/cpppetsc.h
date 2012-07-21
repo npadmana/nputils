@@ -20,8 +20,6 @@
  *
  *  This function automatically assumes PETSC_COMM_WORLD as the communicator.
  *
- * NOTE : These classes have their copy and assignment constructors disabled
- * for now.
  */
 class CppPetscVec {
 public :
@@ -78,10 +76,20 @@ public :
 	 */
 	PetscInt size();
 
-private :
-	// disable copy constructor and assignment operator
+	/** Assignment operator
+	 *
+	 * Note that this makes a deep copy, and is therefore expensive.
+	 */
 	CppPetscVec& operator= (const CppPetscVec& v);
+
+	/** Copy constructor
+	 *
+	 * Note that this makes a deep copy and is expensive.
+	 */
 	CppPetscVec(const CppPetscVec& v);
+
+
+private :
 };
 
 

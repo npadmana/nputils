@@ -31,3 +31,21 @@ PetscInt CppPetscVec::size() {
 	VecGetSize(data, &n);
 	return n;
 }
+
+CppPetscVec& CppPetscVec::operator=(const CppPetscVec& x) {
+	if (this == &x) {
+		return *this;
+	}
+
+	if (data != PETSC_NULL) VecDestroy(&data);
+	VecDuplicate(x.data, &data);
+	VecCopy(x.data, data);
+
+	return *this;
+}
+
+CppPetscVec::CppPetscVec(const CppPetscVec& x) {
+	VecDuplicate(x.data, &data);
+	VecCopy(x.data, data);
+}
+

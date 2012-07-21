@@ -22,8 +22,41 @@ TEST(CppPetsc, Set) {
 	PetscScalar *x = v1.get();
 	for (PetscInt ii=lo; ii != hi; ++ii) EXPECT_DOUBLE_EQ(3.14, x[ii-lo]);
 	v1.restore(x);
-
 }
+
+TEST(CppPetsc, CopyConstructor) {
+	CppPetscVec v1(10);
+	v1 = 3.14;
+	CppPetscVec v2(v1);
+
+	PetscBool flg;
+	VecEqual(v1.data, v2.data, &flg);
+	EXPECT_EQ(PETSC_TRUE, flg);
+}
+
+TEST(CppPetsc, CopyConstructor2) {
+	CppPetscVec v1(10);
+	v1 = 3.14;
+	CppPetscVec v2 = v1;
+
+	PetscBool flg;
+	VecEqual(v1.data, v2.data, &flg);
+	EXPECT_EQ(PETSC_TRUE, flg);
+}
+
+TEST(CppPetsc, Assignment) {
+	CppPetscVec v1(10);
+	v1 = 3.14;
+	CppPetscVec v2;
+	v2 = v1;
+
+	PetscBool flg;
+	VecEqual(v1.data, v2.data, &flg);
+	EXPECT_EQ(PETSC_TRUE, flg);
+}
+
+
+
 
 int main(int argc, char **argv) {
 	safeCall(PetscInitialize(&argc,&argv,(char *) 0, PETSC_NULL), "Error initializing");
