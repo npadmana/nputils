@@ -1,4 +1,12 @@
 include_directories(${CMAKE_SOURCE_DIR}/src/npgsl)
 
-add_executable(npSpline_test npSpline_test.cpp)
-target_link_libraries(npSpline_test gtest gtest_main npgsl gsl gslcblas m)
+set (testlist npSpline_test)
+
+foreach (test1 ${testlist})
+add_executable(${test1} ${test1}.cpp)
+target_link_libraries(${test1} gtest gtest_main npgsl gsl gslcblas m)
+endforeach(test1)
+
+install(TARGETS ${testlist}
+    RUNTIME DESTINATION testbin/npgsl
+)

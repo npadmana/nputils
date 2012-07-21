@@ -7,8 +7,13 @@ include_directories(${CMAKE_SOURCE_DIR}/local/petsc-3.3-p1/include)
 include_directories(${CMAKE_SOURCE_DIR}/local/petsc-3.3-p1/cxx-debug/include)
 link_directories(${CMAKE_SOURCE_DIR}/local/petsc-3.3-p1/cxx-debug/lib)
 
-add_executable(cpppetsc_test cpppetsc_test.cpp)
-target_link_libraries(cpppetsc_test gtest nppm petsc npgsl m)
+set (testlist cpppetsc_test Particles_test)
 
-add_executable(Particles_test Particles_test.cpp)
-target_link_libraries(Particles_test gtest nppm petsc npgsl m)
+foreach (test1 ${testlist})
+add_executable(${test1} ${test1}.cpp)
+target_link_libraries(${test1} gtest nppm petsc npgsl m)
+endforeach(test1)
+
+install(TARGETS ${testlist}
+    RUNTIME DESTINATION testbin/nppm
+)
