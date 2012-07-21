@@ -23,6 +23,10 @@
  */
 class CppPetscVec {
 public :
+	/// Integer indexing typedef
+	typedef PetscInt Index;
+	typedef PetscScalar Value;
+
 	/// Actual data storage
 	Vec data;
 
@@ -58,9 +62,9 @@ public :
 	 *
 	 * Make the array global again
 	 *
-	 * @param x (PetscScalar*) -- the pointer from get()
+	 * @param x (PetscScalar**) -- the pointer from get()
 	 */
-	void restore(PetscScalar *x);
+	void restore(PetscScalar** x);
 
 	/** Set to a scalar value
 	 *

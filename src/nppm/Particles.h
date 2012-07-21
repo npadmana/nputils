@@ -85,7 +85,7 @@ public:
 			ptrs[ii]->getOwnershipRange(lo,hi);
 			x = ptrs[ii]->get();
 			for (PetscInt jj=lo; jj != hi; ++jj) x[jj-lo] = rr();
-			ptrs[ii]->restore(x);
+			ptrs[ii]->restore(&x);
 		}
 	}
 
@@ -121,7 +121,7 @@ public:
 	    // narr = the number of particles being handled by this process
 	    narr[proc]++;
 	  }
-	  ptrs[ivec]->restore(_px);
+	  ptrs[ivec]->restore(&_px);
 	  // Collect all the information
 	  MPI_Allgather(&narr[0], size, MPI_INT, &narr1[0], size, MPI_INT, PETSC_COMM_WORLD);
 
@@ -156,7 +156,7 @@ public:
 	    idx.push_back(icount[proc]);
 	    icount[proc]++;
 	  }
-	  ptrs[ivec]->restore(_px);
+	  ptrs[ivec]->restore(&_px);
 
 
 	  // Assertion

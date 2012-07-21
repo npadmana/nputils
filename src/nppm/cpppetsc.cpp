@@ -18,8 +18,8 @@ PetscScalar * CppPetscVec::get() {
 	return _x;
 }
 
-void CppPetscVec::restore(PetscScalar *x) {
-	VecRestoreArray(data, &x);
+void CppPetscVec::restore(PetscScalar** x) {
+	VecRestoreArray(data, x);
 }
 
 void CppPetscVec::operator= (PetscScalar x) {
