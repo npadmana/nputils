@@ -55,6 +55,12 @@ TEST(CppPetsc, Assignment) {
 	EXPECT_EQ(PETSC_TRUE, flg);
 }
 
+TEST(CppPetsc, SelfAssignment) {
+	EXPECT_NO_THROW({
+		CppPetscVec v1(10);
+		v1 = v1;
+	});
+}
 
 
 
