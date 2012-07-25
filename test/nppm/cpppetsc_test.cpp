@@ -20,9 +20,9 @@ TEST(CppPetsc, Set) {
 
 	v1 = 3.14;
 	v1.getOwnershipRange(lo, hi);
-	PetscScalar *x = v1.get();
-	for (PetscInt ii=lo; ii != hi; ++ii) EXPECT_DOUBLE_EQ(3.14, x[ii-lo]);
-	v1.restore(&x);
+	v1.get();
+	for (PetscInt ii=lo; ii != hi; ++ii) EXPECT_DOUBLE_EQ(3.14, v1[ii-lo]);
+	v1.restore();
 }
 
 TEST(CppPetsc, CopyConstructor) {

@@ -1,6 +1,6 @@
 #include "cpppetsc.h"
 
-CppPetscVec::CppPetscVec(PetscInt ntot, PetscInt nlocal) {
+CppPetscVec::CppPetscVec(Index ntot, Index nlocal) {
 	safeCall(VecCreateMPI(PETSC_COMM_WORLD, nlocal, ntot, &data),
 		"Error allocating vector"); };
 
@@ -8,26 +8,24 @@ CppPetscVec::~CppPetscVec( ){
 	if (data != PETSC_NULL) safeCall(VecDestroy(&data),
 		"Error destroying vector");};
 
-void CppPetscVec::getOwnershipRange(PetscInt &lo, PetscInt &hi) {
+void CppPetscVec::getOwnershipRange(Index &lo, Index &hi) {
 	VecGetOwnershipRange(data, &lo, &hi);
 }
 
-PetscScalar * CppPetscVec::get() {
-	PetscScalar *_x;
-	VecGetArray(data, &_x);
-	return _x;
+void CppPetscVec::get() {
+	VecGetArray(data, &_data);
 }
 
-void CppPetscVec::restore(PetscScalar** x) {
-	VecRestoreArray(data, x);
+void CppPetscVec::restore() {
+	VecRestoreArray(data, &_data);
 }
 
-void CppPetscVec::operator= (PetscScalar x) {
+void CppPetscVec::operator= (CppPetscVec::Value x) {
 	VecSet(data, x);
 }
 
-PetscInt CppPetscVec::size() {
-	PetscInt n;
+CppPetscVec::Index CppPetscVec::size() {
+	Index n;
 	VecGetSize(data, &n);
 	return n;
 }
@@ -48,4 +46,13 @@ CppPetscVec::CppPetscVec(const CppPetscVec& x) {
 	VecDuplicate(x.data, &data);
 	VecCopy(x.data, data);
 }
+
+CppPetscVec::Value& CppPetscVec::operator[](Index ii) {
+	return _data[ii];
+}
+
+const CppPetscVec::Value& CppPetscVec::operator[](Index ii) const {
+	return _data[ii];
+}
+
 

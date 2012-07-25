@@ -29,11 +29,10 @@ template
 <class Vec, class Function>
 void npForEach(Vec& v, Function func) {
 	typename Vec::Index lo, hi, ii;
-	typename Vec::Value* _x;
 	v.getOwnershipRange(lo, hi);
-	_x = v.get();
-	for (ii=0; ii < (hi-lo); ++ii) func(_x[ii]);
-	v.restore(&_x);
+	v.get();
+	for (ii=0; ii < (hi-lo); ++ii) func(v[ii]);
+	v.restore();
 }
 
 

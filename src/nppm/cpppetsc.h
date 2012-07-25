@@ -38,7 +38,7 @@ public :
 	 * @param ntot (PetscInt) total number of particles
 	 * @param nlocal (PetscInt) local number of particles [PETSC_DECIDE]
 	 */
-	CppPetscVec(PetscInt ntot, PetscInt nlocal=PETSC_DECIDE);
+	CppPetscVec(Index ntot, Index nlocal=PETSC_DECIDE);
 
 	/// Destructor
 	~CppPetscVec();
@@ -48,23 +48,21 @@ public :
 	 * @param lo (PetscInt) -- the lower range returned
 	 * @param hi (PetscInt) -- the upper range returned
 	 */
-	void getOwnershipRange(PetscInt &lo, PetscInt &hi);
+	void getOwnershipRange(Index &lo, Index &hi);
 
 	/** Get array
 	 *
 	 * Return a pointer to the data
 	 *
-	 * @return PetscScalar * pointer to the data array
 	 */
-	PetscScalar * get();
+	void get();
 
 	/** Restore array
 	 *
 	 * Make the array global again
 	 *
-	 * @param x (PetscScalar**) -- the pointer from get()
 	 */
-	void restore(PetscScalar** x);
+	void restore();
 
 	/** Set to a scalar value
 	 *
@@ -72,13 +70,13 @@ public :
 	 *
 	 * @param x (PetscScalar) -- value to set to
 	 */
-	void operator= (PetscScalar x);
+	void operator= (Value x);
 
 	/** Return the global size
 	 *
 	 * @return nn (PetscInt)
 	 */
-	PetscInt size();
+	Index size();
 
 	/** Assignment operator
 	 *
@@ -93,7 +91,23 @@ public :
 	CppPetscVec(const CppPetscVec& v);
 
 
+	/** Access operator []
+	 *
+	 * @param ii  (Index) index into the array, using local indices
+	 *
+	 * NOTE : No error bounds checking is done.
+	 * NOTE : You must call get() before using this, and restore() after
+	 */
+	Value& operator[] (Index ii);
+
+	/** Const version of operator[]
+	 *
+	 */
+	const Value& operator[] (Index ii) const;
+
+
 private :
+	Value *_data;
 };
 
 
