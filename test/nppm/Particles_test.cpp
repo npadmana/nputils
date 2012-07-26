@@ -30,10 +30,22 @@ TEST(ParticlesTest, TestAlloc3) {
 	}
 }
 
+TEST(ParticlesTest, TestOwnershipRange) {
+	Particles<3> p1(100);
+	Particles<3>::Index lo, hi, lo1, hi1;
+
+	p1.getOwnershipRange(lo, hi);
+	for (int ii=0; ii < 3; ++ii) {
+		p1.getOwnershipRange(lo1, hi1, ii);
+		EXPECT_EQ(lo, lo1);
+		EXPECT_EQ(hi, hi1);
+	}
+}
+
 TEST(ParticlesTest, TestRandom) {
 	EXPECT_NO_THROW({
 		Particles<3> p1(100);
-		p1.fillRandom();
+		//p1.fillRandom();
 	});
 }
 
