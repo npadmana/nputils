@@ -25,6 +25,8 @@ class CppPetscVec {
 public :
 	/// Integer indexing typedef
 	typedef PetscInt Index;
+
+	/// Value typedef
 	typedef PetscScalar Value;
 
 	/// Actual data storage
