@@ -40,7 +40,7 @@ public:
 	Index npart;
 
 	/// Array of auto_ptrs of CppPetscVecs
-	std::auto_ptr<CppPetscVec> ptrs[nvec];
+	std::unique_ptr<CppPetscVec> ptrs[nvec];
 
 	/// Default constructor
 	Particles() : npart(0) {}
