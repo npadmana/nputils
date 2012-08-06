@@ -12,13 +12,36 @@ void fillRandom(Particles<nvec>& p) {
 	typename Particles<nvec>::Index lo, hi;
 	p.getOwnershipRange(lo, hi);
 
+	p.get();
 	for (int ii=0; ii < nvec; ++ii) {
 		for (int jj=0; jj < (hi-lo); ++jj) {
 			p[ii][jj] = rr();
 		}
 	}
-
+	p.restore();
 }
+
+template <int nvec>
+void fillRandom2(Particles<nvec>& p, int Ngrid) {
+	int rank;
+	double r1;
+	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+	npRandom rr(99+100*rank);
+	typename Particles<nvec>::Index lo, hi;
+	p.getOwnershipRange(lo, hi);
+
+	p.get();
+	for (int jj=0; jj < (hi-lo); ++jj) {
+		r1 = rr()*Ngrid;
+		p[0][jj] = r1;
+		for (int ii=1; ii < nvec; ++ii) {
+			p[ii][jj] = periodic(r1*(ii+1), Ngrid);
+		}
+	}
+	p.restore();
+}
+
+
 
 TEST(PeriodicTest, Test1) {
 	EXPECT_DOUBLE_EQ(0.5, periodic(0.5, 1.0));
@@ -97,6 +120,44 @@ TEST(ParticlesTest, TestRandomAccess2) {
 			EXPECT_DOUBLE_EQ(3.14*(ii+1), static_cast<double>(p1[ii][jj]));
 	p1.restore();
 }
+
+TEST(ParticlesTest, TestSlabDecompose) {
+	// First make sure that the number of processors
+	// divides our chosen grid size (128)
+	int size, rank, proc;
+	int Ngrid = 128;
+	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+	MPI_Comm_size(PETSC_COMM_WORLD, &size);
+	ASSERT_EQ(0, Ngrid%size);
+
+	Particles<3> p1(1000);
+
+	// Generate fake data
+	fillRandom2(p1, Ngrid);
+
+	for (int idir = 0; idir < 3; ++idir) {
+		// Now decompose
+		p1.SlabDecompose(Ngrid, idir);
+
+		// Now test that the particles are indeed correctly decomposed
+		Particles<3>::Index lo, hi;
+		double r1, r2;
+		p1.getOwnershipRange(lo, hi);
+		p1.get();
+		for (int jj=0; jj < (hi-lo); ++jj) {
+			r1 = p1[idir][jj];
+			r2 = p1[0][jj];
+			proc = static_cast<int>(r1)/(Ngrid/size);
+			EXPECT_EQ(rank, proc);
+			for (int ii=0; ii < 3; ++ii) {
+				EXPECT_DOUBLE_EQ(periodic(r2*(ii+1), 128), p1[ii][jj]);
+			}
+		}
+		p1.restore();
+	}
+
+}
+
 
 
 
