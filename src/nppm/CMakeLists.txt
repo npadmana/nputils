@@ -1,5 +1,7 @@
 set(CMAKE_C_COMPILER "mpicc")
 set(CMAKE_CXX_COMPILER "mpicxx")
+set(CMAKE_CXX_FLAGS -std=c++11)
+
 
 include_directories(${CMAKE_SOURCE_DIR}/src/npgsl)
 include_directories(${CMAKE_SOURCE_DIR}/local/petsc-3.3-p1/include)
