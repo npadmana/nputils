@@ -63,7 +63,7 @@ TEST(CppPetsc, SelfAssignment) {
 	});
 }
 
-TEST(npTranform, Test1) {
+TEST(npForEach, Test1) {
 	CppPetscVec v1(10), v2(10);
 	v1 = 3.14;
 	npForEach(v2, [](PetscScalar& x){x=3.14;});

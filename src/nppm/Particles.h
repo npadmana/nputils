@@ -34,13 +34,16 @@ class Particles {
 public:
 
 	/// Indexing typedef
-	typedef PetscInt Index;
+	typedef CppPetscVec::Index Index;
+	typedef CppPetscVec Value;
 
 	/// Number of particles
 	Index npart;
 
 	/// Array of auto_ptrs of CppPetscVecs
-	std::unique_ptr<CppPetscVec> ptrs[nvec];
+	std::auto_ptr<CppPetscVec> ptrs[nvec];
+	// FIXME : This should probably be changed to unique_ptr, but it causes all sorts
+    // of eclipse headaches.
 
 	/// Default constructor
 	Particles() : npart(0) {}
@@ -67,9 +70,25 @@ public:
 	 */
 	void init(Index _npart, Index nlocal=PETSC_DECIDE) {
 		npart = _npart;
-		for (int ii=0; ii < nvec; ++ii) {
-			(ptrs[ii]).reset(new CppPetscVec(npart, nlocal));
+		for (auto &pp : ptrs)
+			pp.reset(new CppPetscVec(npart, nlocal));
+	}
+
+	/** Get data for local use
+	 *
+	 */
+	void get() {
+		for (auto &pp : ptrs) {
+			pp->get();
 		}
+	}
+
+	/** Restore data for global use
+	 *
+	 */
+	void restore() {
+		// Simple restore wrapper
+		for (auto &pp : ptrs) pp->restore();
 	}
 
 	/** Return the ownership range for the lo and hi vectors
@@ -82,25 +101,21 @@ public:
 		ptrs[ivec]->getOwnershipRange(lo, hi);
 	}
 
-	/** Randomly fill with values from [0, 1)
+	/** Pointer to particle array ii
 	 *
-	 * This is mostly for testing. Note that this fills all the vectors
-	 * the same way.
+	 * This is a useful level of reorganization, for converting
+	 * structure of arrays into an array of structures.
+	 *
+	 * Used as Particles[icoord][ipart]
+	 *
+	 * This may not be the most efficient way to do this problem.
+	 * See Particles_test for examples on how to use this
+	 *
+	 * We do not have a const correct version of this as yet.
 	 */
-//	void fillRandom() {
-//		int rank;
-//		MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-//
-//		npRandom rr(99+100*rank);
-//		for (int ii=0; ii < nvec; ++ii) {
-//			PetscScalar *x;
-//			PetscInt lo, hi;
-//			ptrs[ii]->getOwnershipRange(lo,hi);
-//			x = ptrs[ii]->get();
-//			for (PetscInt jj=lo; jj != hi; ++jj) x[jj-lo] = rr();
-//			ptrs[ii]->restore(&x);
-//		}
-//	}
+	Value& operator[](Index ii) {
+		return *ptrs[ii];
+	}
 
 	/** Slab decompose particles
 	 *
@@ -205,8 +220,6 @@ private :
 	Particles(const Particles &p);
 	Particles& operator= (const Particles &p);
 
-	// Cache pointers to the data
-	CppPetscVec::Value * x[nvec];
 };
 
 #endif /* PARTICLES_H_ */
