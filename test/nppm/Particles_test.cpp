@@ -139,21 +139,18 @@ TEST(ParticlesTest, TestSlabDecompose) {
 		// Now decompose
 		p1.SlabDecompose(Ngrid, idir);
 
-		// Now test that the particles are indeed correctly decomposed
-		Particles<3>::Index lo, hi;
-		double r1, r2;
-		p1.getOwnershipRange(lo, hi);
-		p1.get();
-		for (int jj=0; jj < (hi-lo); ++jj) {
-			r1 = p1[idir][jj];
-			r2 = p1[0][jj];
-			proc = static_cast<int>(r1)/(Ngrid/size);
+		// Check to see that the particle coordinates have not been shuffled
+		npForEach(*p1.ptrs[0], *p1.ptrs[1], *p1.ptrs[2], [](double x, double y, double z){
+			EXPECT_DOUBLE_EQ(periodic(x*2, 128), y);
+			EXPECT_DOUBLE_EQ(periodic(x*3, 128), z);
+		});
+
+
+		// Check to see that the particles are on the correct slab
+		npForEach(*p1.ptrs[idir], [&](double x){
+			proc = static_cast<int>(x)/(Ngrid/size);
 			EXPECT_EQ(rank, proc);
-			for (int ii=0; ii < 3; ++ii) {
-				EXPECT_DOUBLE_EQ(periodic(r2*(ii+1), 128), p1[ii][jj]);
-			}
-		}
-		p1.restore();
+		});
 	}
 
 }
