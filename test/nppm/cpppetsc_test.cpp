@@ -95,6 +95,14 @@ TEST(CppPetsc, Sum) {
 	EXPECT_DOUBLE_EQ(31.4, v1.sum());
 }
 
+TEST(CppPetsc, Shift) {
+	CppPetscVec v1(10), v2(10);
+	v1 = 1.0;
+	v2 = 0.0;
+	v2 += 1.0;
+	EXPECT_TRUE(v1==v2);
+}
+
 
 
 TEST(npForEach, Test1) {

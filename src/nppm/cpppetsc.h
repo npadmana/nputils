@@ -95,6 +95,12 @@ public :
 	 */
 	Value sum();
 
+	/** Add a scalar value to all elements of a vector
+	 *
+	 * @param x (PetscScalar [Value]) -- compute vec += x
+	 */
+	CppPetscVec& operator+= (const Value& x);
+
 	/** Assignment operator
 	 *
 	 * Note that this makes a deep copy, and is therefore expensive.

@@ -67,4 +67,7 @@ const CppPetscVec::Value& CppPetscVec::operator[](Index ii) const {
 	return _data[ii];
 }
 
-
+CppPetscVec& CppPetscVec::operator+= (const CppPetscVec::Value& x) {
+	VecShift(data, x);
+	return *this;
+}
