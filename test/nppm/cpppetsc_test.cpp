@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "cpppetsc.h"
 #include "nppm_algorithms.h"
-#include "iostream"
 
 TEST(CppPetsc, AllocNull) {
 	EXPECT_NO_THROW({
@@ -170,6 +169,22 @@ TEST(npForEach, Test1) {
 	EXPECT_EQ(PETSC_TRUE, flg);
 }
 
+TEST(npForEach, Test2) {
+	CppPetscVec v1(10), v2(10);
+	v1 = 3.14;
+	v2 = 2.0;
+	npForEach(v1, v2, [](CppPetscVec::Value &x, CppPetscVec::Value &y){x = x+y;});
+	npForEach(v1, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(5.14, x);});
+}
+
+TEST(npForEach, Test3) {
+	CppPetscVec v1(10), v2(10), v3(10);
+	v1 = 3.14;
+	v2 = 2.0;
+	v3 = 2.0;
+	npForEach(v1, v2, v3, [](CppPetscVec::Value &x, CppPetscVec::Value &y, CppPetscVec::Value &z){z = x+y-2*z;});
+	npForEach(v3, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(1.14, x);});
+}
 
 
 int main(int argc, char **argv) {
