@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "cpppetsc.h"
 #include "nppm_algorithms.h"
+#include "iostream"
 
 TEST(CppPetsc, AllocNull) {
 	EXPECT_NO_THROW({
@@ -110,6 +111,52 @@ TEST(CppPetsc, Scale) {
 	v2 *= 3.14;
 	EXPECT_TRUE(v1==v2);
 }
+
+TEST(CppPetsc, AXPY1) {
+	CppPetscVec v1(10), v2(10);
+	v1 = 1.0;
+	v2 = 1.0;
+	v2.AXPY(v1, 3.14);
+	npForEach(v2, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(4.14,x);});
+}
+
+TEST(CppPetsc, AXPY2) {
+	CppPetscVec v1(10);
+	v1 = 1.0;
+	v1.AXPY(v1, 3.14);
+	npForEach(v1, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(4.14,x);});
+}
+
+TEST(CppPetsc, AYPX1) {
+	CppPetscVec v1(10), v2(10);
+	v1 = 2.0;
+	v2 = 1.0;
+	v2.AYPX(v1, 3.14);
+	npForEach(v2, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(5.14,x);});
+}
+
+TEST(CppPetsc, AYPX2) {
+	CppPetscVec v1(10);
+	v1 = 1.0;
+	v1.AYPX(v1, 4.14);
+	npForEach(v1, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(5.14,x);});
+}
+
+TEST(CppPetsc, AXPBY1) {
+	CppPetscVec v1(10), v2(10);
+	v1 = 1.0;
+	v2 = 2.0;
+	v2.AXPBY(v1, 3.14, 2.0);
+	npForEach(v2, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(7.14,x);});
+}
+
+TEST(CppPetsc, AXPBY2) {
+	CppPetscVec v1(10);
+	v1 = 1.0;
+	v1.AXPBY(v1, 3.14, 2.0);
+	npForEach(v1, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(5.14,x);});
+}
+
 
 
 

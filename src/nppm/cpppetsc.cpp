@@ -63,6 +63,33 @@ CppPetscVec::Value& CppPetscVec::operator[](Index ii) {
 	return _data[ii];
 }
 
+void CppPetscVec::AXPY(const CppPetscVec& x, const CppPetscVec::Value& alpha) {
+	// Check to see if x is the same as this
+	if (this == &x) {
+		VecScale(data, alpha+1);
+	} else {
+		VecAXPY(data, alpha, x.data);
+	}
+}
+
+void CppPetscVec::AYPX(const CppPetscVec& x, const Value& alpha) {
+	// Check to see if x is the same as this
+	if (this == &x) {
+		VecScale(data, alpha+1);
+	} else {
+		VecAYPX(data, alpha, x.data);
+	}
+}
+
+void CppPetscVec::AXPBY(const CppPetscVec& x, const CppPetscVec::Value& alpha, const CppPetscVec::Value& beta) {
+	// Check to see if x is the same as this
+		if (this == &x) {
+			VecScale(data, alpha+beta);
+		} else {
+			VecAXPBY(data, alpha, beta, x.data);
+		}
+}
+
 const CppPetscVec::Value& CppPetscVec::operator[](Index ii) const {
 	return _data[ii];
 }

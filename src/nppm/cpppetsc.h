@@ -107,6 +107,35 @@ public :
 	 */
 	CppPetscVec& operator*= (const Value& x);
 
+	/** Compute y = alpha x + y
+	 *
+	 * @param x (CppPetscVec)
+	 * @param alpha (PetscScalar)
+	 *
+	 * Note : This uses VecAXPY is x is different from y, else just scales by alpha+1
+	 */
+	void AXPY(const CppPetscVec& x, const Value& alpha);
+
+	/** Compute y = x + alpha y
+	 *
+	 * @param x (CppPetscVec)
+	 * @param alpha (PetscScalar)
+	 *
+	 * Note : This uses VecAXPY is x is different from y, else just scales by alpha+1
+	 */
+	void AYPX(const CppPetscVec& x, const Value& alpha);
+
+	/** Compute y = alpha x + beta y
+	 *
+	 * @param x (CppPetscVec)
+	 * @param alpha (PetscScalar)
+	 *
+	 * Note : This uses VecAXPY is x is different from y, else just scales by alpha+1
+	 */
+	void AXPBY(const CppPetscVec& x, const Value& alpha, const Value& beta);
+
+
+
 	/** Assignment operator
 	 *
 	 * Note that this makes a deep copy, and is therefore expensive.
