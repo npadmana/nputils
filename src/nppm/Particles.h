@@ -195,15 +195,20 @@ public:
 			  static_cast<Index*>(&idx[0]), PETSC_USE_POINTER, &to);
 
 
-	  // Create a new temporary vector to scatter to
-	  CppPetscVec tmp(PETSC_DETERMINE, narr[rank]);
+	  // Set up the scatter operation -- note that tmp is created and destroyed here
 	  VecScatter vs;
-	  safeCall(VecScatterCreate(ptrs[ivec]->data, from, tmp.data, to, &vs),
-			  "Failed generating scatter set");
+	  {
+		  CppPetscVec tmp(PETSC_DETERMINE, narr[rank]);
+		  safeCall(VecScatterCreate(ptrs[ivec]->data, from, tmp.data, to, &vs),
+		  			  "Failed generating scatter set");
+	  }
+
+	  // Now do the actual scattering
 	  for (int ii=0; ii < nvec; ++ii) {
+		  CppPetscVec tmp(PETSC_DETERMINE, narr[rank]);
 		  VecScatterBegin(vs, ptrs[ii]->data, tmp.data, INSERT_VALUES, SCATTER_FORWARD);
 		  VecScatterEnd(vs, ptrs[ii]->data, tmp.data, INSERT_VALUES, SCATTER_FORWARD);
-		  *ptrs[ii] = tmp;
+		  ptrs[ii]->swap(tmp);
 	  }
 
 	  // Clean up
