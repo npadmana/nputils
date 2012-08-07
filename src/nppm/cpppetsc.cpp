@@ -31,6 +31,7 @@ CppPetscVec::Index CppPetscVec::size() {
 }
 
 CppPetscVec& CppPetscVec::operator=(const CppPetscVec& x) {
+	PetscPrintf(PETSC_COMM_WORLD, "NOTE : Assignment operator executed!!\n");
 	if (this == &x) {
 		return *this;
 	}
@@ -55,6 +56,7 @@ CppPetscVec::Value CppPetscVec::sum() {
 }
 
 CppPetscVec::CppPetscVec(const CppPetscVec& x) {
+	PetscPrintf(PETSC_COMM_WORLD, "NOTE : Copy constructor executed!!\n");
 	VecDuplicate(x.data, &data);
 	VecCopy(x.data, data);
 }
