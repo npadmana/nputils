@@ -71,3 +71,9 @@ CppPetscVec& CppPetscVec::operator+= (const CppPetscVec::Value& x) {
 	VecShift(data, x);
 	return *this;
 }
+
+CppPetscVec& CppPetscVec::operator*= (const CppPetscVec::Value& x) {
+	VecScale(data, x);
+	return *this;
+}
+

@@ -101,6 +101,12 @@ public :
 	 */
 	CppPetscVec& operator+= (const Value& x);
 
+	/** Multiply elementwise by a scalar
+	 *
+	 * @param x (PetscScalar [Value]) -- compute vec *= x elementwise
+	 */
+	CppPetscVec& operator*= (const Value& x);
+
 	/** Assignment operator
 	 *
 	 * Note that this makes a deep copy, and is therefore expensive.

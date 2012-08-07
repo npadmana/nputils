@@ -103,6 +103,14 @@ TEST(CppPetsc, Shift) {
 	EXPECT_TRUE(v1==v2);
 }
 
+TEST(CppPetsc, Scale) {
+	CppPetscVec v1(10), v2(10);
+	v1 = 3.14;
+	v2 = 1.0;
+	v2 *= 3.14;
+	EXPECT_TRUE(v1==v2);
+}
+
 
 
 TEST(npForEach, Test1) {
