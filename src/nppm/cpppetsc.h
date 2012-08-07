@@ -89,6 +89,12 @@ public :
 	 */
 	Index size();
 
+	/** Return the sum of all elements
+	 *
+	 * @return sum (Value : PetscScalar) -- sum of all the elements
+	 */
+	Value sum();
+
 	/** Assignment operator
 	 *
 	 * Note that this makes a deep copy, and is therefore expensive.

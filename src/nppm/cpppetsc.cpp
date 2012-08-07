@@ -48,6 +48,12 @@ bool CppPetscVec::operator ==(const CppPetscVec& vec) {
 	return (flg==PETSC_TRUE);
 }
 
+CppPetscVec::Value CppPetscVec::sum() {
+	Value retval;
+	VecSum(data, &retval);
+	return retval;
+}
+
 CppPetscVec::CppPetscVec(const CppPetscVec& x) {
 	VecDuplicate(x.data, &data);
 	VecCopy(x.data, data);
