@@ -74,6 +74,15 @@ public :
 	 */
 	void operator= (Value x);
 
+	/** Compare two vectors
+	 *
+	 * overloaded operator==
+	 *
+	 * @param vec (const CppPetscVec &) -- vector to compare against
+	 */
+	bool operator== (const CppPetscVec& vec);
+
+
 	/** Return the global size
 	 *
 	 * @return nn (PetscInt)

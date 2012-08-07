@@ -40,6 +40,7 @@ TEST(CppPetsc, CopyConstructor2) {
 	v1 = 3.14;
 	CppPetscVec v2 = v1;
 
+	// We don't use the operator version here
 	PetscBool flg;
 	VecEqual(v1.data, v2.data, &flg);
 	EXPECT_EQ(PETSC_TRUE, flg);
@@ -62,6 +63,32 @@ TEST(CppPetsc, SelfAssignment) {
 		v1 = v1;
 	});
 }
+
+TEST(CppPetsc, Equal) {
+	CppPetscVec v1(10);
+	v1 = 3.14;
+	CppPetscVec v2 = v1;
+	EXPECT_TRUE(v1==v2);
+	EXPECT_TRUE(v2==v1);
+}
+
+TEST(CppPetsc, Equal2) {
+	CppPetscVec v1(10);
+	v1 = 3.14;
+	CppPetscVec v2(10);
+	v2 = 3.15;
+	EXPECT_FALSE(v1==v2);
+	EXPECT_FALSE(v2==v1);
+}
+
+TEST(CppPetsc, Equal3) {
+	CppPetscVec v1(10), v2(11);
+	v1 = 3.14;
+	v2 = 3.14;
+	EXPECT_FALSE(v1==v2);
+	EXPECT_FALSE(v2==v1);
+}
+
 
 TEST(npForEach, Test1) {
 	CppPetscVec v1(10), v2(10);

@@ -42,6 +42,12 @@ CppPetscVec& CppPetscVec::operator=(const CppPetscVec& x) {
 	return *this;
 }
 
+bool CppPetscVec::operator ==(const CppPetscVec& vec) {
+	PetscBool flg;
+	VecEqual(data, vec.data, &flg);
+	return (flg==PETSC_TRUE);
+}
+
 CppPetscVec::CppPetscVec(const CppPetscVec& x) {
 	VecDuplicate(x.data, &data);
 	VecCopy(x.data, data);
