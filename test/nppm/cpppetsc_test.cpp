@@ -157,6 +157,23 @@ TEST(CppPetsc, AXPBY2) {
 }
 
 
+TEST(CppPetsc, Swap1) {
+	CppPetscVec v1(10), v2(20);
+	EXPECT_EQ(10, v1.size());
+	EXPECT_EQ(20, v2.size());
+	v1.swap(v2);
+	EXPECT_EQ(10, v2.size());
+	EXPECT_EQ(20, v1.size());
+}
+
+TEST(CppPetsc, Swap2) {
+	CppPetscVec v1(10), v2(20);
+	v1 = 3.14; v2=2.73;
+	v1.swap(v2);
+	npForEach(v1, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(2.73,x);});
+	npForEach(v2, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(3.14,x);});
+}
+
 
 
 TEST(npForEach, Test1) {

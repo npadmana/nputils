@@ -149,6 +149,12 @@ public :
 	CppPetscVec(const CppPetscVec& v);
 
 
+	/** Swap the underlying Petsc vectors
+	 *
+	 * @param v (vector to swap with)
+	 */
+	void swap(CppPetscVec& v);
+
 	/** Access operator []
 	 *
 	 * @param ii  (Index) index into the array, using local indices

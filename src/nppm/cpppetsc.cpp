@@ -92,6 +92,13 @@ void CppPetscVec::AXPBY(const CppPetscVec& x, const CppPetscVec::Value& alpha, c
 		}
 }
 
+void CppPetscVec::swap(CppPetscVec& v) {
+	Vec tmp;
+	tmp = v.data;
+	v.data = data;
+	data = tmp;
+}
+
 const CppPetscVec::Value& CppPetscVec::operator[](Index ii) const {
 	return _data[ii];
 }
