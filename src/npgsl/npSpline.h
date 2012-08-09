@@ -9,6 +9,7 @@
 #define NPSPLINE_H_
 
 #include <vector>
+#include <cstddef>
 #include <gsl/gsl_spline.h>
 #include <gsl/gsl_interp.h>
 

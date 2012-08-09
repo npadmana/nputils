@@ -15,7 +15,7 @@ void Spline::init() {
 	// Set up the interpolation
 	acc = gsl_interp_accel_alloc();
 	sp = gsl_interp_alloc(interptype, n);
-	gsl_interp_init(sp, &_x[0], &_y[0], n);
+	gsl_interp_init(sp, static_cast<double *>(&_x[0]), static_cast<double *>(&_y[0]), n);
 }
 
 // Now define the copy constructor and assignment operator
@@ -42,5 +42,5 @@ Spline::~Spline() {
 }
 
 double Spline::operator()(double x) {
-	return gsl_interp_eval(sp, &_x[0], &_y[0], x, acc);
+	return gsl_interp_eval(sp, static_cast<double *>(&_x[0]), static_cast<double *>(&_y[0]), x, acc);
 }
