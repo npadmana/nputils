@@ -50,7 +50,7 @@ public :
 	 * @param lo (PetscInt) -- the lower range returned
 	 * @param hi (PetscInt) -- the upper range returned
 	 */
-	void getOwnershipRange(Index &lo, Index &hi);
+	void getOwnershipRange(Index &lo, Index &hi) const;
 
 	/** Get array
 	 *
@@ -87,7 +87,7 @@ public :
 	 *
 	 * @return nn (PetscInt)
 	 */
-	Index size();
+	Index size() const;
 
 	/** Return the sum of all elements
 	 *
@@ -146,7 +146,7 @@ public :
 	 *
 	 * Note that this makes a deep copy and is expensive.
 	 */
-	CppPetscVec(const CppPetscVec& v);
+	CppPetscVec(const CppPetscVec& v, bool shallowcopy=false);
 
 
 	/** Swap the underlying Petsc vectors
@@ -168,6 +168,19 @@ public :
 	 *
 	 */
 	const Value& operator[] (Index ii) const;
+
+	/** Tests compatibility with another vector
+	 *
+	 * @param x (CppPetscVec)
+	 *
+	 * @returns true if vectors have the same layout
+	 */
+	bool is_compatible(const CppPetscVec& x) {
+		Index lo1, lo2, hi1, hi2;
+		this->getOwnershipRange(lo1, hi1);
+		x.getOwnershipRange(lo2, hi2);
+		return (lo1==lo2) && (hi1==hi2);
+	}
 
 
 private :

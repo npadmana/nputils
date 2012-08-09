@@ -8,7 +8,7 @@ CppPetscVec::~CppPetscVec( ){
 	if (data != PETSC_NULL) safeCall(VecDestroy(&data),
 		"Error destroying vector");};
 
-void CppPetscVec::getOwnershipRange(Index &lo, Index &hi) {
+void CppPetscVec::getOwnershipRange(Index &lo, Index &hi) const {
 	VecGetOwnershipRange(data, &lo, &hi);
 }
 
@@ -24,7 +24,7 @@ void CppPetscVec::operator= (CppPetscVec::Value x) {
 	VecSet(data, x);
 }
 
-CppPetscVec::Index CppPetscVec::size() {
+CppPetscVec::Index CppPetscVec::size() const {
 	Index n;
 	VecGetSize(data, &n);
 	return n;
@@ -55,10 +55,12 @@ CppPetscVec::Value CppPetscVec::sum() {
 	return retval;
 }
 
-CppPetscVec::CppPetscVec(const CppPetscVec& x) {
-	PetscPrintf(PETSC_COMM_WORLD, "NOTE : Copy constructor executed!!\n");
+CppPetscVec::CppPetscVec(const CppPetscVec& x, bool shallowcopy) {
 	VecDuplicate(x.data, &data);
-	VecCopy(x.data, data);
+	if (!shallowcopy) {
+		PetscPrintf(PETSC_COMM_WORLD, "NOTE : DeepCopy constructor executed!!\n");
+		VecCopy(x.data, data);
+	}
 }
 
 CppPetscVec::Value& CppPetscVec::operator[](Index ii) {

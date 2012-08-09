@@ -46,6 +46,15 @@ TEST(CppPetsc, CopyConstructor2) {
 	EXPECT_EQ(PETSC_TRUE, flg);
 }
 
+
+TEST(CppPetsc, CopyConstructor3) {
+	CppPetscVec v1(10);
+	CppPetscVec v2(v1, true);
+
+	EXPECT_TRUE(v1.is_compatible(v2));
+}
+
+
 TEST(CppPetsc, Assignment) {
 	CppPetscVec v1(10);
 	v1 = 3.14;
