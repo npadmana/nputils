@@ -21,32 +21,39 @@
  */
 double periodic(double x, double L);
 
-/** A distributed particle class
+/** Partition code
  *
- * The particle data are stored in an array of auto_ptrs of CppPetscVecs.
- * The template parameter nvec sets the number of vectors.
+ * @param nobj -- Number of objects to partition across n jobs
+ * @param size -- number of jobs to partition across
+ * @param rank -- rank of particular job
  *
- * We disable copy constructors and assignment operators
- *
+ * @return number of objects local to job "rank"
  */
-template <int nvec>
+template <class IntType>
+IntType partition(IntType nobj, int size, int rank) {
+	IntType base = nobj/size;
+	IntType remainder = nobj%size;
+
+	if (rank >= (size-remainder)) base++;
+
+	return base;
+}
+
+
+template <class T>
 class Particles {
-public:
 
-	/// Indexing typedef
+public :
+	/// Set up typedefs for data storage and indices
+	typedef  T Value;
 	typedef CppPetscVec::Index Index;
-	typedef CppPetscVec Value;
 
-	/// Number of particles
+	/// number of particles
 	Index npart;
 
-	/// Array of auto_ptrs of CppPetscVecs
-	std::auto_ptr<CppPetscVec> ptrs[nvec];
-	// FIXME : This should probably be changed to unique_ptr, but it causes all sorts
-    // of eclipse headaches.
 
 	/// Default constructor
-	Particles() : npart(0) {}
+	Particles() : npart(0) {};
 
 	/** Constructor
 	 *
@@ -63,24 +70,49 @@ public:
 	 *
 	 * It is useful to separate this from the constructor, since
 	 * we likely will have cases to set up the memory after the initial
-	 * construction
+	 * construction.
 	 *
-	 * @param _npart (PetscInt) number of particles
+	 * IMPORTANT : These are the number of particles, not the underlying
+	 * vector size. The data are automatically scaled
+	 *
+	 * @param _npart (PetscInt) number of particles (can be PETSC_DETERMINE)
 	 * @param nlocal (PetscInt) local number of particles [PETSC_DECIDE]
+	 *
+	 *
 	 */
 	void init(Index _npart, Index nlocal=PETSC_DECIDE) {
 		npart = _npart;
-		for (auto &pp : ptrs)
-			pp.reset(new CppPetscVec(npart, nlocal));
+		if (nlocal==PETSC_DECIDE) {
+			int rank, size;
+			MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+			MPI_Comm_size(PETSC_COMM_WORLD, &size);
+			vec.init(PETSC_DETERMINE, partition(npart, size, rank)*nfac);
+		} else {
+			vec.init(PETSC_DETERMINE, nlocal*nfac);
+		}
+	}
+
+
+	/** Return the ownership range
+	 *
+	 * This is again in particles, not the underlying representation
+	 *
+	 * @param lo (Index) : Return the lower index
+	 * @param hi (Index) : Return the upper index
+	 * @param ivec (Index) : use the ivec'th vector to do this.
+	 */
+	void getOwnershipRange(Index& lo, Index &hi) {
+		vec.getOwnershipRange(lo, hi);
+		lo /= nfac;
+		hi /= nfac;
 	}
 
 	/** Get data for local use
 	 *
 	 */
 	void get() {
-		for (auto &pp : ptrs) {
-			pp->get();
-		}
+		vec.get();
+		_data = reinterpret_cast<Value *>(&vec[0]);
 	}
 
 	/** Restore data for global use
@@ -88,140 +120,168 @@ public:
 	 */
 	void restore() {
 		// Simple restore wrapper
-		for (auto &pp : ptrs) pp->restore();
+		vec.restore();
 	}
 
-	/** Return the ownership range for the lo and hi vectors
+	/** Access operator []
 	 *
-	 * @param lo (Index) : Return the lower index
-	 * @param hi (Index) : Return the upper index
-	 * @param ivec (Index) : use the ivec'th vector to do this.
+	 * @param ii  (Index) index into the array, using local indices
+	 *
+	 * NOTE : No error bounds checking is done.
+	 * NOTE : You must call get() before using this, and restore() after
 	 */
-	void getOwnershipRange(Index& lo, Index &hi, int ivec=0) {
-		ptrs[ivec]->getOwnershipRange(lo, hi);
+	Value& operator[] (Index ii) {
+		return _data[ii];
 	}
 
-	/** Pointer to particle array ii
+	/** Const version of operator[]
 	 *
-	 * This is a useful level of reorganization, for converting
-	 * structure of arrays into an array of structures.
-	 *
-	 * Used as Particles[icoord][ipart]
-	 *
-	 * This may not be the most efficient way to do this problem.
-	 * See Particles_test for examples on how to use this
-	 *
-	 * We do not have a const correct version of this as yet.
 	 */
-	Value& operator[](Index ii) {
-		return *ptrs[ii];
+	const Value& operator[] (Index ii) const {
+		return _data[ii];
 	}
 
-	/** Slab decompose particles
+	/** Domain decompose particles
 	 *
-	 * @param L (double) size of box
-	 * @param ivec (int) vector to use for the decomposition (default=0)
+	 * @param domainfunc : function that takes in T and returns
+	 *              the processor the data needs to go to.
+	 *              If -1, then the particle is not scattered.
+	 *
 	 *
 	 */
-	void SlabDecompose(double L, int ivec=0) {
-	  int rank, size, proc, Ng, rtot;
-	  std::vector<int> narr, narr1;
-	  std::vector<Index> idx,icount, icount_check;
-	  Index nlocal, lo, hi;
+	template <class Func>
+	void domainDecompose(Func domainfunc, Particles<T>* outptr=NULL) {
+		int rank, size;
+		std::vector<int> narr, narr1;
+		std::vector<Index> icount;
+		Index nlocal, lo, hi;
 
-	  // Get the rank and size
-	  MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-	  MPI_Comm_size(PETSC_COMM_WORLD, &size);
-	  narr.resize(size); icount.resize(size); narr1.resize(size*size); icount_check.resize(size);
-	  for (int ii=0; ii < size; ++ii) narr[ii] = 0;
+		// Get local length etc....
+		getOwnershipRange(lo, hi);
+		nlocal = hi-lo;
 
-	  // Get the local range
-	  ptrs[ivec]->getOwnershipRange(lo, hi);
-	  nlocal = hi-lo;
+		// Get the rank and size
+		MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+		MPI_Comm_size(PETSC_COMM_WORLD, &size);
 
-	  // Loop over all the particles, figuring out how many will go to each processor
-	  npForEach(*ptrs[ivec], [&](CppPetscVec::Value x) {
-		  // which processor will this live on
-		  proc = static_cast<int>(periodic(x/L,1.0) * size);
-		  // narr = the number of particles being handled by this process
-		  narr[proc]++;
-	  });
-
-	  // Collect all the information
-	  MPI_Allgather(&narr[0], size, MPI_INT, &narr1[0], size, MPI_INT, PETSC_COMM_WORLD);
-
-	  // Figure out starting locations for particles
-	  for (int ii=0; ii < size; ++ii) {narr[ii] = 0; icount[ii] = 0;}
-	  for (int ii=0; ii < size; ++ii) {
-	    for (int jj=0; jj < size; ++jj)
-	      narr[ii] += narr1[ii+jj*size];
-	    for (int jj=0; jj < rank;++jj)
-	      icount[ii] += narr1[ii+jj*size];
-	  }
-	  rtot = 0;
-	  for (int ii=0; ii < size; ++ii) {
-	    icount[ii] += rtot;
-	    rtot += narr[ii];
-	    icount_check[ii] = icount[ii] + narr1[ii+rank*size];
-	  }
-	  if (rtot != npart) safeCall(99, "Assertion failed in particle distribution");
-
-	  // USEFUL DEBUGGING
-	  //  for (int ii=0; ii < size; ++ii) {
-	  //    PetscSynchronizedPrintf(PETSC_COMM_WORLD,"%i %i %llu %llu\n",
-	  //		  rank*size+ii,narr[ii], icount[ii], icount_check[ii]);
-	  //  }
-	  //  PetscSynchronizedFlush(PETSC_COMM_WORLD);
+		// Figure out the mapping
+		std::vector<int> iproc(nlocal);
+		{
+			int ii=0;
+			int iproc1;
+			npForEach(*this, [&](T &p){
+				iproc[ii] = domainfunc(p);
+				if (iproc[ii] >= size) {
+					safeCall(99, "ERROR!! Processor out of range\n");
+				}
+				ii++;
+			});
+		}
 
 
-	  // Figure out where everyone needs to go.
-	  npForEach(*ptrs[ivec], [&](CppPetscVec::Value x) {
-	  		  // which processor will this live on
-	  		  proc = static_cast<int>(periodic(x/L,1.0) * size);
-	  		  idx.push_back( static_cast<Index>(icount[proc]));
-	  		  icount[proc]++;
-	   });
+		// Initialize
+		narr.resize(size); icount.resize(size);
+		narr1.resize(size*size);
+		for (int ii=0; ii < size; ++ii) narr[ii] = 0;
+
+		for (int ii : iproc) {
+			if (ii > -1) narr[ii] += nfac; // Account for nfac
+		}
+
+		// Collect all the information
+		MPI_Allgather(&narr[0], size, MPI_INT, &narr1[0], size, MPI_INT, PETSC_COMM_WORLD);
+
+		// Figure out starting locations for particles
+		for (int ii=0; ii < size; ++ii) {narr[ii] = 0; icount[ii] = 0;}
+		for (int ii=0; ii < size; ++ii) {
+			for (int jj=0; jj < size; ++jj)
+				narr[ii] += narr1[ii+jj*size];
+			for (int jj=0; jj < rank;++jj)
+				icount[ii] += narr1[ii+jj*size];
+		}
+		Index rtot = 0;
+		for (int ii=0; ii < size; ++ii) {
+			icount[ii] += rtot;
+			rtot += narr[ii];
+		}
 
 
-	  // Assertion
-	  for (int ii=0; ii < size; ++ii)
-	    if (icount[ii] != icount_check[ii])
-	    	safeCall(99,"Assertion failed : icount != icount_check");
+		CppPetscVec tmp(PETSC_DETERMINE, narr[rank]);
 
-	  // Generate the two index sets
-	  IS from, to;
-	  ISCreateStride(PETSC_COMM_WORLD, nlocal, lo, 1, &from);
-	  ISCreateGeneral(PETSC_COMM_WORLD, nlocal,
-			  static_cast<Index*>(&idx[0]), PETSC_USE_POINTER, &to);
+		Index lo1, hi1;
+		vec.getOwnershipRange(lo1,hi1);
+
+		IS from, to;
+		VecScatter vs;
+
+		// We will scatter each of the nfac elements separately
+		std::vector<Index> idx1, idx2;
+
+		// This sets up the scatters
+		{
+			int iproc1;
+			for (Index ii=lo; ii < hi; ++ii) {
+				iproc1 = iproc[ii-lo];
+				if (iproc1 > -1) {
+					idx1.push_back(ii*nfac);
+					idx2.push_back(icount[iproc1]);
+					icount[iproc1] += nfac;
+				}
+			}
+		}
+
+		for (int ifac=0; ifac < nfac; ++ifac) {
+			ISCreateGeneral(PETSC_COMM_WORLD, idx1.size(),
+					static_cast<Index*>(&idx1[0]), PETSC_USE_POINTER, &from);
+			ISCreateGeneral(PETSC_COMM_WORLD, idx2.size(),
+					static_cast<Index*>(&idx2[0]), PETSC_USE_POINTER, &to);
+
+			safeCall(VecScatterCreate(vec.data, from, tmp.data, to, &vs),
+					"Failed generating scatter set");
+
+			VecScatterBegin(vs, vec.data, tmp.data, INSERT_VALUES, SCATTER_FORWARD);
+			VecScatterEnd(vs, vec.data, tmp.data, INSERT_VALUES, SCATTER_FORWARD);
 
 
-	  // Set up the scatter operation -- note that tmp is created and destroyed here
-	  VecScatter vs;
-	  {
-		  CppPetscVec tmp(PETSC_DETERMINE, narr[rank]);
-		  safeCall(VecScatterCreate(ptrs[ivec]->data, from, tmp.data, to, &vs),
-		  			  "Failed generating scatter set");
-	  }
+			ISDestroy(&from);
+			ISDestroy(&to);
+			VecScatterDestroy(&vs);
 
-	  // Now do the actual scattering
-	  for (int ii=0; ii < nvec; ++ii) {
-		  CppPetscVec tmp(PETSC_DETERMINE, narr[rank]);
-		  VecScatterBegin(vs, ptrs[ii]->data, tmp.data, INSERT_VALUES, SCATTER_FORWARD);
-		  VecScatterEnd(vs, ptrs[ii]->data, tmp.data, INSERT_VALUES, SCATTER_FORWARD);
-		  ptrs[ii]->swap(tmp);
-	  }
+			// Move to the next element
+			for (Index &jj : idx1) jj++;
+			for (Index &jj : idx2) jj++;
 
-	  // Clean up
-	  ISDestroy(&from);
-	  ISDestroy(&to);
+		}
+
+		if (outptr == NULL) outptr = this;
+		outptr->npart = tmp.size()/nfac;
+		outptr->vec.swap(tmp);
 	}
 
 
 private :
 	// Turn off copy constructors and assignment operators
-	Particles(const Particles &p);
-	Particles& operator= (const Particles &p);
+	Particles(const Particles<T> &p);
+	Particles& operator=(const Particles<T> &p);
+
+	// The underlying vector
+	// This is private, since directly using it can be
+	// tricky
+	CppPetscVec vec;
+
+
+	// Internal pointer to data
+	Value *_data;
+
+	// Assertion check that the structure can be mapped to the
+	// underlying type.
+	static_assert((sizeof(T)%sizeof(CppPetscVec::Value)) == 0,
+			"Size of structure needs to be multiple of size of underlying type");
+
+	// Map the internal PetscVec type to the type we want
+	const int nfac = sizeof(T)/sizeof(CppPetscVec::Value);
 
 };
+
 
 #endif /* PARTICLES_H_ */
