@@ -42,6 +42,14 @@ public :
 	 */
 	CppPetscVec(Index ntot, Index nlocal=PETSC_DECIDE);
 
+	/** Initialization, outside of a constructor
+	 *
+	 * @param ntot (PetscInt) total number of particles
+	 * @param nlocal (PetscInt) local number of particles [PETSC_DECIDE]
+	 *
+	 */
+	void init(Index ntot, Index nlocal=PETSC_DECIDE);
+
 	/// Destructor
 	~CppPetscVec();
 

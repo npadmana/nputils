@@ -8,6 +8,12 @@ CppPetscVec::~CppPetscVec( ){
 	if (data != PETSC_NULL) safeCall(VecDestroy(&data),
 		"Error destroying vector");};
 
+void CppPetscVec::init(Index ntot, Index nlocal) {
+	if (data != PETSC_NULL) safeCall(VecDestroy(&data),
+			"Error destroying vector");
+	safeCall(VecCreateMPI(PETSC_COMM_WORLD, nlocal, ntot, &data),
+		"Error allocating vector"); };
+
 void CppPetscVec::getOwnershipRange(Index &lo, Index &hi) const {
 	VecGetOwnershipRange(data, &lo, &hi);
 }
