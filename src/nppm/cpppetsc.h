@@ -206,6 +206,23 @@ public :
 	void set(const std::vector<Index> &idx, const std::vector<Value> &val,
 			InsertMode iora);
 
+	/** Set values in a block, across processors
+	 *
+	 * This overloaded version uses a pointer instead of a vector, mostly
+	 * for ugly memory tricks.
+	 *
+	 * @param idx vector<Index> (indices to fill in)
+	 * @param val Value* (values)
+	 * @param iora (ADD_VALUES/INSERT_VALUES)
+	 *
+	 * IMPORTANT NOTE : This is not a collective operation
+	 * IMPORTANT NOTE : You must call assemblyBegin and assemblyEnd before
+	 *   using the vector.
+	 */
+	void set(const std::vector<Index> &idx, const Value* val,
+			InsertMode iora);
+
+
 	/** Begin vector assembly
 	 *
 	 * Separate routine if you want to interleave computation and communication

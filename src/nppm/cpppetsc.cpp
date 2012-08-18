@@ -130,6 +130,16 @@ void CppPetscVec::set(const std::vector<Index> &idx, const std::vector<Value> &v
 	VecSetValues(data, nelts, &idx[0], &val[0], iora);
 }
 
+void CppPetscVec::set(const std::vector<Index> &idx, const Value* val,
+		InsertMode iora) {
+
+	// Get the number of elements
+	Index nelts = idx.size();
+
+	VecSetValues(data, nelts, &idx[0], val, iora);
+}
+
+
 void CppPetscVec::assemblyBegin() {
 	VecAssemblyBegin(data);
 }
