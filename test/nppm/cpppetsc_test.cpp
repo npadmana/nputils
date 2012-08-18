@@ -183,6 +183,62 @@ TEST(CppPetsc, Swap2) {
 	npForEach(v2, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(3.14,x);});
 }
 
+TEST(CppPetsc, SetValues1) {
+	const int N=10;
+	int rank;
+	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+	CppPetscVec vec(N);
+	std::vector<CppPetscVec::Index> idx(N);
+	std::vector<CppPetscVec::Value> val(N);
+
+	// Set up
+	if (rank==0) {
+		for (int ii=0; ii<N; ++ii) {
+			idx[ii] = ii;
+			val[ii] = 3.14*ii + 2.73;
+		}
+		vec.set(idx, val, INSERT_VALUES);
+	}
+	vec.assemblyBegin(); vec.assemblyEnd();
+
+	// Test
+	CppPetscVec::Index lo, hi, ii;
+	vec.getOwnershipRange(lo, hi); ii=lo;
+	npForEach(vec, [&ii, &lo](double x){
+		EXPECT_NEAR(3.14*ii+2.73, x, 1.e-7);
+		ii++;
+	});
+}
+
+TEST(CppPetsc, SetValues2) {
+	const int N=10;
+	int rank;
+	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+	CppPetscVec vec(N);
+	std::vector<CppPetscVec::Index> idx(N);
+	std::vector<CppPetscVec::Value> val(N);
+
+	// Set up
+	vec = 2.73;
+	if (rank==0) {
+		for (int ii=0; ii<N; ++ii) {
+			idx[ii] = ii;
+			val[ii] = 3.14*ii;
+		}
+		vec.set(idx, val, ADD_VALUES);
+	}
+	vec.assemblyBegin(); vec.assemblyEnd();
+
+	// Test
+	CppPetscVec::Index lo, hi, ii;
+	vec.getOwnershipRange(lo, hi); ii=lo;
+	npForEach(vec, [&ii, &lo](double x){
+		EXPECT_NEAR(3.14*ii+2.73, x, 1.e-7);
+		ii++;
+	});
+}
 
 
 TEST(npForEach, Test1) {
@@ -211,7 +267,6 @@ TEST(npForEach, Test3) {
 	npForEach(v1, v2, v3, [](CppPetscVec::Value &x, CppPetscVec::Value &y, CppPetscVec::Value &z){z = x+y-2*z;});
 	npForEach(v3, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(1.14, x);});
 }
-
 
 int main(int argc, char **argv) {
 	safeCall(PetscInitialize(&argc,&argv,(char *) 0, PETSC_NULL), "Error initializing");
