@@ -240,6 +240,35 @@ TEST(CppPetsc, SetValues2) {
 	});
 }
 
+TEST(CppPetsc, SetValues3) {
+	const int N=10;
+	int rank;
+	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+	CppPetscVec vec(N);
+	std::vector<CppPetscVec::Index> idx(N);
+	std::vector<CppPetscVec::Value> val(N);
+
+	// Set up
+	if (rank==0) {
+		for (int ii=0; ii<N; ++ii) {
+			idx[ii] = ii;
+			val[ii] = 3.14*ii;
+		}
+		vec.set(idx, &val[0], INSERT_VALUES);
+	}
+	vec.assemblyBegin(); vec.assemblyEnd();
+
+	// Test
+	CppPetscVec::Index lo, hi, ii;
+	vec.getOwnershipRange(lo, hi); ii=lo;
+	npForEach(vec, [&ii, &lo](double x){
+		EXPECT_NEAR(3.14*ii, x, 1.e-7);
+		ii++;
+	});
+}
+
+
 
 TEST(npForEach, Test1) {
 	CppPetscVec v1(10), v2(10);
