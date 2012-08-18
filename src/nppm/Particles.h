@@ -266,6 +266,41 @@ public :
 		outptr->vec.swap(tmp);
 	}
 
+	/** Start assembling vector
+	 *
+	 */
+	void assemblyBegin() {
+		vec.assemblyBegin();
+	}
+
+	/** End assembling vector
+	 *
+	 */
+	void assemblyEnd() {
+		vec.assemblyEnd();
+	}
+
+	/** Set values
+	 *
+	 * @param idx  indices
+	 * @param val  values
+	 *
+	 * NOTE : This only supports inserting values.
+	 *
+	 */
+	void set(const std::vector<Index> &idx, const std::vector<Value> &val) {
+		Index nn = idx.size()*nfac;
+		// Set up the vector that determines where things go.
+
+		std::vector<Index> idx1(nn);
+
+		for (Index ii : idx) {
+			for (int jj=0; jj<nfac; ++jj) idx1.push_back(ii*nfac + jj);
+		}
+
+		vec.set(idx, static_cast<CppPetscVec::Value>(&val[0]), INSERT_VALUES);
+	}
+
 
 private :
 	// Turn off copy constructors and assignment operators
