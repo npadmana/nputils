@@ -1,4 +1,5 @@
-/*
+/** @file Particle class
+ *
  * Particles.h
  *
  *  Created on: Jul 20, 2012
@@ -40,6 +41,12 @@ IntType partition(IntType nobj, int size, int rank) {
 }
 
 
+
+/** A distributed Particle class
+ *
+ * The class is parametrized by a template that can hold
+ * structured particle data.
+ */
 template <class T>
 class Particles {
 
@@ -99,7 +106,6 @@ public :
 	 *
 	 * @param lo (Index) : Return the lower index
 	 * @param hi (Index) : Return the upper index
-	 * @param ivec (Index) : use the ivec'th vector to do this.
 	 */
 	void getOwnershipRange(Index& lo, Index &hi) {
 		vec.getOwnershipRange(lo, hi);
@@ -146,7 +152,9 @@ public :
 	 * @param domainfunc : function that takes in T and returns
 	 *              the processor the data needs to go to.
 	 *              If -1, then the particle is not scattered.
-	 *
+	 * @param outptr (Particles<T>*, optional) pointer to another
+	 *        particle data structure if you do not want an in-place
+	 *        decomposition.
 	 *
 	 */
 	template <class Func>

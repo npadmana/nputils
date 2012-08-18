@@ -139,6 +139,7 @@ public :
 	 *
 	 * @param x (CppPetscVec)
 	 * @param alpha (PetscScalar)
+	 * @param beta (PetscScalar)
 	 *
 	 * Note : This uses VecAXPY is x is different from y, else just scales by alpha+1
 	 */
