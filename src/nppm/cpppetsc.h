@@ -8,6 +8,8 @@
 #ifndef CPPPETSC_H_
 #define CPPPETSC_H_
 
+#include <vector>
+
 #include "petscvec.h"
 #include "np_petsc_utils.h"
 
@@ -189,6 +191,29 @@ public :
 		x.getOwnershipRange(lo2, hi2);
 		return (lo1==lo2) && (hi1==hi2);
 	}
+
+	/** Set values in a block, across processors
+	 *
+	 * @param idx vector<Index> (indices to fill in)
+	 * @param val vector<Value> (values)
+	 * @param iora (ADD_VALUES/INSERT_VALUES)
+	 * @param assemble (bool) [default=true] run vector assembly
+	 *
+	 */
+	void set(const std::vector<Index> idx, const std::vector<Value> val,
+			InsertMode iora, bool assemble=true);
+
+	/** Begin vector assembly
+	 *
+	 * Separate routine if you want to interleave computation and communication
+	 */
+	void assemblyBegin();
+
+	/** Begin vector assembly
+	 *
+	 * Separate routine if you want to interleave computation and communication
+	 */
+	void assemblyEnd();
 
 
 private :

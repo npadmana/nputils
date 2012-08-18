@@ -121,3 +121,25 @@ CppPetscVec& CppPetscVec::operator*= (const CppPetscVec::Value& x) {
 	return *this;
 }
 
+void CppPetscVec::set(const std::vector<Index> idx, const std::vector<Value> val,
+		InsertMode iora, bool assemble) {
+
+	// Get the number of elements
+	Index nelts = idx.size();
+
+	VecSetValues(data, nelts, &idx[0], &val[0], iora);
+
+	if (assemble) {
+		VecAssemblyBegin(data);
+		VecAssemblyEnd(data);
+	}
+
+}
+
+void CppPetscVec::assemblyBegin() {
+	VecAssemblyBegin(data);
+}
+
+void CppPetscVec::assemblyEnd() {
+	VecAssemblyEnd(data);
+}
