@@ -197,11 +197,13 @@ public :
 	 * @param idx vector<Index> (indices to fill in)
 	 * @param val vector<Value> (values)
 	 * @param iora (ADD_VALUES/INSERT_VALUES)
-	 * @param assemble (bool) [default=true] run vector assembly
 	 *
+	 * IMPORTANT NOTE : This is not a collective operation
+	 * IMPORTANT NOTE : You must call assemblyBegin and assemblyEnd before
+	 *   using the vector.
 	 */
-	void set(const std::vector<Index> idx, const std::vector<Value> val,
-			InsertMode iora, bool assemble=true);
+	void set(const std::vector<Index> &idx, const std::vector<Value> &val,
+			InsertMode iora);
 
 	/** Begin vector assembly
 	 *
