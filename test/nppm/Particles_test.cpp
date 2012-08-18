@@ -201,6 +201,32 @@ TEST(ParticlesTest, TestDomainDecompose1) {
 
 }
 
+TEST(ParticlesTest, TestSet1) {
+	const int N=10;
+	TestParticles p(N);
+	std::vector<TestParticles::Index> idx(N);
+	std::vector<ptest> val(N);
+
+	int rank;
+	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+	if (rank==0) {
+		for (int ii=0; ii<N; ++ii) {
+			idx[ii] = ii;
+			(val[ii]).id = 2*ii + 4;
+		}
+		p.set(idx, val);
+	}
+	p.assemblyBegin(); p.assemblyEnd();
+
+	TestParticles::Index lo, hi;
+	p.getOwnershipRange(lo, hi); int ii = lo;
+	npForEach(p, [&ii](ptest p1) {
+		EXPECT_EQ(2*ii+4, p1.id);
+		ii++;
+	});
+
+}
+
 
 
 TEST(ParticlesTest, TestDomainDecompose2) {

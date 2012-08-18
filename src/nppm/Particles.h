@@ -54,6 +54,7 @@ public :
 	/// Set up typedefs for data storage and indices
 	typedef  T Value;
 	typedef CppPetscVec::Index Index;
+	typedef CppPetscVec::Value VecValue;
 
 	/// number of particles
 	Index npart;
@@ -294,11 +295,12 @@ public :
 
 		std::vector<Index> idx1(nn);
 
+		Index kk=0;
 		for (Index ii : idx) {
-			for (int jj=0; jj<nfac; ++jj) idx1.push_back(ii*nfac + jj);
+			for (int jj=0; jj<nfac; ++jj, ++kk) idx1[kk] = ii*nfac + jj;
 		}
 
-		vec.set(idx, static_cast<CppPetscVec::Value>(&val[0]), INSERT_VALUES);
+		vec.set(idx1, reinterpret_cast<const VecValue *>(&val[0]), INSERT_VALUES);
 	}
 
 
