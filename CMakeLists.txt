@@ -6,6 +6,7 @@ add_subdirectory(external)
 
 # Define various includes
 include_directories(${CMAKE_SOURCE_DIR}/local/include)
+include_directories(${CMAKE_SOURCE_DIR}/local/boost_1_50_0)
 #include_directories(${CMAKE_SOURCE_DIR}/install/include)
 link_directories(${CMAKE_SOURCE_DIR}/local/lib)
 #link_directories(${CMAKE_SOURCE_DIR}/install/lib)
