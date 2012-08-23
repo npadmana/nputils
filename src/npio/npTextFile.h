@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "boost/iostreams/filtering_stream.hpp"
+#include <boost/iostreams/filtering_stream.hpp>
 
 /** Typedef for a line.
  *
@@ -79,7 +79,9 @@ class InputTextFile {
 
 private :
 	std::ifstream ff;
+	boost::iostreams::filtering_istream ifs_;
 	char commentchar_, quotechar_, escapechar_, sepchar_;
+	std::string fn_;
 
 	void open_(std::string fn);
 	void close_();
