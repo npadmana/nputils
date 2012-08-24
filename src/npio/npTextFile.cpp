@@ -87,8 +87,10 @@ int InputTextFile::numLines() {
 Lines InputTextFile::read(int nlines) {
 	Lines out;
 	OneLine tmp;
+	std::string str;
 
-	for (std::string str; (std::getline(ifs_, str)) && (nlines!=0);) {
+	while ((ifs_) && (nlines!=0)) {
+		std::getline(ifs_, str);
 		tmp = parseline_(str);
 		if (tmp.size() > 0) {
 			out.push_back(tmp);

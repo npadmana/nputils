@@ -1,14 +1,22 @@
 #include "gtest/gtest.h"
 #include "npTextFile.h"
+#include <iostream>
 
 bool CompareLines(const Lines& l1, const Lines& l2) {
 
 	// Check to see that the two have the same length
-	if (l1.size() != l2.size()) return false;
+	if (l1.size() != l2.size()) {
+		std::cout << l1.size() <<" "<< l2.size() << " ";
+		std::cout << "F1\n";
+		return false;
+	}
 
 	for (int ii=0; ii < l1.size(); ++ii) {
 		// Check to see that the i'th line element has the same number of elts
-		if (l1[ii].size() != l2[ii].size()) return false;
+		if (l1[ii].size() != l2[ii].size()) {
+			std::cout << ii << "F2\n";
+			return false;
+		}
 
 		// Now do a detailed comparison
 		for (int jj=0; jj < l1[ii].size(); ++jj)
@@ -70,6 +78,53 @@ TEST(InputTextFileTest, GzipRead) {
 
 	EXPECT_TRUE(CompareLines(l1, l2));
 }
+
+
+TEST(InputTextFileTest, BufferedRead1) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_nocomment.txt");
+	Lines l1 = t1.read();
+	Lines l2, l3;
+
+	int nread=1;
+	do {
+		l2 = t2.read(nread);
+		l3.insert(l3.end(), l2.begin(), l2.end());
+	} while (l2.size() == nread);
+
+	EXPECT_TRUE(CompareLines(l1, l3));
+}
+
+TEST(InputTextFileTest, BufferedRead2) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_nocomment.txt");
+	Lines l1 = t1.read();
+	Lines l2, l3;
+
+	int nread=2;
+	do {
+		l2 = t2.read(nread);
+		l3.insert(l3.end(), l2.begin(), l2.end());
+	} while (l2.size() == nread);
+
+	EXPECT_TRUE(CompareLines(l1, l3));
+}
+
+TEST(InputTextFileTest, BufferedRead3) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_nocomment.txt");
+	Lines l1 = t1.read();
+	Lines l2, l3;
+
+	int nread=3;
+	do {
+		l2 = t2.read(nread);
+		l3.insert(l3.end(), l2.begin(), l2.end());
+	} while (l2.size() == nread);
+
+	EXPECT_TRUE(CompareLines(l1, l3));
+}
+
 
 
 
