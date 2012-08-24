@@ -126,6 +126,84 @@ TEST(InputTextFileTest, BufferedRead3) {
 }
 
 
+TEST(InputTextFileTest, CommentBufferedRead1) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_comment.txt");
+	Lines l1, l2;
+
+	int nread=1;
+	do {
+		l1 = t1.read(nread);
+		l2 = t2.read(nread);
+		EXPECT_TRUE(CompareLines(l1, l2));
+	} while (l2.size() == nread);
+}
+
+TEST(InputTextFileTest, CommentBufferedRead2) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_comment.txt");
+	Lines l1, l2;
+
+	int nread=2;
+	do {
+		l1 = t1.read(nread);
+		l2 = t2.read(nread);
+		EXPECT_TRUE(CompareLines(l1, l2));
+	} while (l2.size() == nread);
+}
+
+TEST(InputTextFileTest, CommentBufferedRead3) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_comment.txt");
+	Lines l1, l2;
+
+	int nread=3;
+	do {
+		l1 = t1.read(nread);
+		l2 = t2.read(nread);
+		EXPECT_TRUE(CompareLines(l1, l2));
+	} while (l2.size() == nread);
+}
+
+
+TEST(InputTextFileTest, GzipBufferedRead1) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_commentgzip.txt.gz");
+	Lines l1, l2;
+
+	int nread=1;
+	do {
+		l1 = t1.read(nread);
+		l2 = t2.read(nread);
+		EXPECT_TRUE(CompareLines(l1, l2));
+	} while (l2.size() == nread);
+}
+
+TEST(InputTextFileTest, GzipBufferedRead2) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_commentgzip.txt.gz");
+	Lines l1, l2;
+
+	int nread=2;
+	do {
+		l1 = t1.read(nread);
+		l2 = t2.read(nread);
+		EXPECT_TRUE(CompareLines(l1, l2));
+	} while (l2.size() == nread);
+}
+
+TEST(InputTextFileTest, GzipBufferedRead3) {
+	InputTextFile t1("inputtextfile_nocomment.txt");
+	InputTextFile t2("inputtextfile_commentgzip.txt.gz");
+	Lines l1, l2;
+
+	int nread=3;
+	do {
+		l1 = t1.read(nread);
+		l2 = t2.read(nread);
+		EXPECT_TRUE(CompareLines(l1, l2));
+	} while (l2.size() == nread);
+}
 
 
 
