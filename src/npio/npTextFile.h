@@ -49,7 +49,7 @@ public:
 	 * @param dropempty -- drop empty tokens or not; note for true CSV files, false may be appropriate here.
 	 *
 	 */
-	InputTextFile(std::string fn, char commentchar='#', char sepchar=' ', char quotechar='\"', char escapechar='\\',
+	InputTextFile(const std::string& fn, char commentchar='#', char sepchar=' ', char quotechar='\"', char escapechar='\\',
 			bool dropempty=true);
 
 	/** Destructor
@@ -95,9 +95,9 @@ private :
 	bool dropempty_;
 
 	// Helper functions
-	void open_(std::string fn);
+	void open_(const std::string& fn);
 	void close_();
-	OneLine parseline_(std::string str);
+	OneLine parseline_(const std::string& str);
 
 	// Tokenizer
 	boost::escaped_list_separator<char> tokfunc_;

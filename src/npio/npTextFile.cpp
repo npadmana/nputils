@@ -53,7 +53,7 @@ private:
 
 
 
-InputTextFile::InputTextFile(std::string fn, char commentchar, char sepchar,
+InputTextFile::InputTextFile(const std::string& fn, char commentchar, char sepchar,
 		char quotechar, char escapechar, bool dropempty) :
 		commentchar_(commentchar), fn_(fn), dropempty_(dropempty),
 		tokfunc_(escapechar, sepchar, quotechar),
@@ -73,7 +73,7 @@ int InputTextFile::numLines() {
 	close_();
 	open_(fn_);
 
-	for (std::string str; getline(ifs_, str);) {
+	for (std::string str; std::getline(ifs_, str);) {
 		tmp = parseline_(str);
 		if (tmp.size() > 0) retval++;
 	}
@@ -86,14 +86,25 @@ int InputTextFile::numLines() {
 
 Lines InputTextFile::read(int nlines) {
 	Lines out;
+	OneLine tmp;
+
+	for (std::string str; (std::getline(ifs_, str)) && (nlines!=0); --nlines) {
+		tmp = parseline_(str);
+		if (tmp.size() > 0) out.push_back(tmp);
+	}
 
 	return out;
 }
 
-void InputTextFile::open_(std::string fn) {
+void InputTextFile::open_(const std::string& fn) {
 
 	// If a gzipped file, push a decompressor on the stack
 	// and open file in binary mode
+	ifs_.reset();
+	// Push the shell comment removal
+	ifs_.push(shell_comments_input_filter(commentchar_));
+
+	// Push decompressor if necessary
 	if (boost::iends_with(fn, ".gz")) {
 		ff.open(fn, std::ios_base::in | std::ios_base::binary);
 		ifs_.push(io::gzip_decompressor());
@@ -104,8 +115,6 @@ void InputTextFile::open_(std::string fn) {
 	if (!ff.is_open()) {
 		throw "Unable to open file\n";
 	}
-	// Push the shell comment removal
-	ifs_.push(shell_comments_input_filter(commentchar_));
 	// Push the file handle
 	ifs_.push(ff);
 
@@ -117,17 +126,15 @@ void InputTextFile::close_() {
 	ff.close();
 }
 
-OneLine InputTextFile::parseline_(std::string str) {
+OneLine InputTextFile::parseline_(const std::string& str) {
 	OneLine ret;
 
 	tok_.assign(str);
 	for (auto ii=tok_.begin(); ii != tok_.end(); ++ii) {
 		if ((ii->size() > 0) && dropempty_) {
 			ret.push_back(*ii);
-			std::cout << "<" << *ii << ">" << " ";
 		}
 	}
-	std::cout << std::endl;
 
 	return ret;
 }
