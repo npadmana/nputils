@@ -3,6 +3,7 @@
 
 // The includes below are copied as part of the shell_comments_input_filter case
 #include <cassert>
+#include <iostream>
 #include <cstdio>    // EOF.
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/detail/ios.hpp>  // BOOST_IOS.
@@ -53,19 +54,32 @@ private:
 
 
 InputTextFile::InputTextFile(std::string fn, char commentchar, char sepchar,
-		char quotechar, char escapechar) :
-		commentchar_(commentchar), sepchar_(sepchar), quotechar_(quotechar),
-		escapechar_(escapechar), fn_(fn)
+		char quotechar, char escapechar, bool dropempty) :
+		commentchar_(commentchar), fn_(fn), dropempty_(dropempty),
+		tokfunc_(escapechar, sepchar, quotechar),
+		tok_(std::string(),tokfunc_)
 {
-	open_(fn);
+	open_(fn_);
 }
 
 InputTextFile::~InputTextFile() {
-	io::close(ifs_);
+	close_();
 }
 
 int InputTextFile::numLines() {
 	int retval = 0;
+	OneLine tmp;
+
+	close_();
+	open_(fn_);
+
+	for (std::string str; getline(ifs_, str);) {
+		tmp = parseline_(str);
+		if (tmp.size() > 0) retval++;
+	}
+
+	close_();
+	open_(fn_);
 
 	return retval;
 }
@@ -100,4 +114,20 @@ void InputTextFile::open_(std::string fn) {
 
 void InputTextFile::close_() {
 	io::close(ifs_);
+	ff.close();
+}
+
+OneLine InputTextFile::parseline_(std::string str) {
+	OneLine ret;
+
+	tok_.assign(str);
+	for (auto ii=tok_.begin(); ii != tok_.end(); ++ii) {
+		if ((ii->size() > 0) && dropempty_) {
+			ret.push_back(*ii);
+			std::cout << "<" << *ii << ">" << " ";
+		}
+	}
+	std::cout << std::endl;
+
+	return ret;
 }

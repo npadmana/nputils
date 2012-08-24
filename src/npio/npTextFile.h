@@ -14,6 +14,8 @@
 
 #include <boost/iostreams/filtering_stream.hpp>
 
+#include <boost/tokenizer.hpp>
+
 /** Typedef for a line.
  *
  * A line is treated as a vector of strings
@@ -36,6 +38,7 @@ typedef std::vector<OneLine> Lines;
  */
 class InputTextFile {
 
+public:
 	/** Constructor
 	 *
 	 * @param fn (filename)
@@ -43,8 +46,11 @@ class InputTextFile {
 	 * @param sepchar -- character to be used to separate fields
 	 * @param quotechar -- character for quoted fields
 	 * @param escapechar -- characted for escape characters
+	 * @param dropempty -- drop empty tokens or not; note for true CSV files, false may be appropriate here.
+	 *
 	 */
-	InputTextFile(std::string fn, char commentchar='#', char sepchar=' ', char quotechar='\"', char escapechar='\\');
+	InputTextFile(std::string fn, char commentchar='#', char sepchar=' ', char quotechar='\"', char escapechar='\\',
+			bool dropempty=true);
 
 	/** Destructor
 	 *
@@ -78,13 +84,25 @@ class InputTextFile {
 
 
 private :
+
+	// File stream stuff
 	std::ifstream ff;
 	boost::iostreams::filtering_istream ifs_;
-	char commentchar_, quotechar_, escapechar_, sepchar_;
-	std::string fn_;
 
+	// Cache basic information
+	char commentchar_;
+	std::string fn_;
+	bool dropempty_;
+
+	// Helper functions
 	void open_(std::string fn);
 	void close_();
+	OneLine parseline_(std::string str);
+
+	// Tokenizer
+	boost::escaped_list_separator<char> tokfunc_;
+	boost::tokenizer<boost::escaped_list_separator<char> > tok_;
+
 };
 
 
