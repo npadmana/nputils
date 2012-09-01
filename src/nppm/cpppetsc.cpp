@@ -147,3 +147,10 @@ void CppPetscVec::assemblyBegin() {
 void CppPetscVec::assemblyEnd() {
 	VecAssemblyEnd(data);
 }
+
+
+CppPetscMat::~CppPetscMat() {
+	if (data != PETSC_NULL) safeCall(MatDestroy(&data),
+			"Error destroying matrix");
+}
+

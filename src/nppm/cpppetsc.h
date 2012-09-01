@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "petscvec.h"
+#include "petscmat.h"
 #include "np_petsc_utils.h"
 
 /** Wrapper class for PETSc vectors.
@@ -239,6 +240,80 @@ public :
 private :
 	Value *_data;
 };
+
+/** Wrapper class for PETSc matrices.
+ *
+ * As with CppPetscVec, this wraps Petsc matrices, freeing the user
+ * from the tedium of remembering to free matrices etc. As with the
+ * vector classes, the underlying data member is accessible.
+ *
+ * The current version is specialized to sparse MPI AIJ matrices.
+ *
+ * Unlike vectors, the various ways to play with matrices is more limited,
+ * since I only need very specific functionality. This may change with time.
+ *
+ * Matrices are not assignable or copyable.
+ */
+class CppPetscMat {
+
+public :
+	/// Integer indexing typedef
+	typedef PetscInt Index;
+
+	/// Value typedef
+	typedef PetscScalar Value;
+
+	Mat data;
+
+	/// Default constructor
+	CppPetscMat() : data(PETSC_NULL) {};
+
+	/// Destructor
+	~CppPetscMat();
+
+	/** Constructor
+	 *
+	 * This version simply specifies the number of local rows
+	 * and columns. We assume that matrices are created after vectors,
+	 * in which case the local information is known.
+	 *
+	 * No pre-allocation is done in this case.
+	 *
+	 * ???
+	 */
+
+	/** Constructor
+	 *
+	 * This version specifies the number of local rows
+	 * and columns. We assume that matrices are created after vectors,
+	 * in which case the local information is known.
+	 *
+	 * It also allows specifying the number of non-zero elements in the
+	 * "diagonal" and "off-diagonal matrices" (assumed to be the same for every row)
+	 * ???
+	 */
+
+
+	/** Constructor
+	 *
+	 * This version specifies the number of local rows
+	 * and columns. We assume that matrices are created after vectors,
+	 * in which case the local information is known.
+	 *
+	 * It also allows specifying the number of non-zero elements per row in the
+	 * "diagonal" and "off-diagonal matrices".
+	 * ???
+	 */
+
+
+
+private :
+	// Not copyable or assignable
+	CppPetscMat(const CppPetscMat& x);
+	CppPetscMat& operator= (const CppPetscMat& x);
+};
+
+
 
 
 #endif /* CPPPETSC_H_ */
