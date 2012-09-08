@@ -356,6 +356,31 @@ public :
 	 * @param val (Value) : value
 	 * @param iora (InsertMode) : ADD_VALUES/INSERT_VALUES
 	 */
+	void set(Index m, Index n, Index val, InsertMode iora);
+
+	/* Set a logically dense block into the matrix
+	 *
+	 * @param m vector<Index> : indices of rows
+	 * @param n vector<Index> : indices of columns
+	 * @param val vector<Value> : indices of values
+	 * @param iora (InsertMode) : ADD_VALUES/INSERT_VALUES
+	 *
+	 */
+	void set(const std::vector<Index>& m, const std::vector<Index>& n, const std::vector<Value>& val, InsertMode iora);
+
+	/* Start the matrix assembly
+	 *
+	 * @param type [MatAssemblyType (see PETSc doc)] : MAT_FLUSH_ASSEMBLY/MAT_FINAL_ASSEMBLY; defaults to MAT_FINAL_ASSEMBLY
+	 */
+	void assemblyBegin(MatAssemblyType type=MAT_FINAL_ASSEMBLY);
+
+	/* End the matrix assembly
+	 *
+	 * @param type [MatAssemblyType (see PETSc doc)] : MAT_FLUSH_ASSEMBLY/MAT_FINAL_ASSEMBLY; defaults to MAT_FINAL_ASSEMBLY
+	 */
+	void assemblyEnd(MatAssemblyType type=MAT_FINAL_ASSEMBLY);
+
+
 
 
 private :

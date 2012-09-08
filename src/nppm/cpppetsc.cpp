@@ -183,6 +183,24 @@ void CppPetscMat::getOwnershipRange(Index& lo, Index& hi) {
 	MatGetOwnershipRange(data, &lo, &hi);
 }
 
+void CppPetscMat::set(Index m, Index n, Index val, InsertMode iora) {
+	MatSetValue(data, m, n, val,  iora);
+}
+
+void CppPetscMat::set(const std::vector<Index>& m, const std::vector<Index>& n,
+		const std::vector<Value>& val, InsertMode iora) {
+	MatSetValues(data, m.size(), &m[0], n.size(), &n[0], &val[0], iora);
+}
+
+void CppPetscMat::assemblyBegin(MatAssemblyType type) {
+	MatAssemblyBegin(data, type);
+}
+
+void CppPetscMat::assemblyEnd(MatAssemblyType type) {
+	MatAssemblyEnd(data, type);
+}
+
+
 
 
 
