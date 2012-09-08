@@ -200,6 +200,15 @@ void CppPetscMat::assemblyEnd(MatAssemblyType type) {
 	MatAssemblyEnd(data, type);
 }
 
+void CppPetscMat::mult(CppPetscVec& x, CppPetscVec& y) {
+	MatMult(data, x.data, y.data);
+}
+
+void CppPetscMat::multTransposed(CppPetscVec& x, CppPetscVec& y) {
+	MatMultTranspose(data, x.data, y.data);
+}
+
+
 
 
 

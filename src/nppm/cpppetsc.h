@@ -381,6 +381,27 @@ public :
 	void assemblyEnd(MatAssemblyType type=MAT_FINAL_ASSEMBLY);
 
 
+	/* Matrix multiplication
+	 *
+	 * Compute y=Ax
+	 *
+	 * @param x (CppPetscVec) : the vector x (in)
+	 * @param y (CppPetscVec) : the vector y (out)
+	 *
+	 * NOTE : x and y cannot be the same vector
+	 */
+	void mult(CppPetscVec& x, CppPetscVec& y);
+
+	/* Matrix transposed multiplication
+	 *
+	 * Compute y=A^t x
+	 *
+	 * @param x (CppPetscVec) : the vector x (in)
+	 * @param y (CppPetscVec) : the vector y (out)
+	 *
+	 * NOTE : x and y cannot be the same vector
+	 */
+	void multTransposed(CppPetscVec& x, CppPetscVec& y);
 
 
 private :
