@@ -154,3 +154,35 @@ CppPetscMat::~CppPetscMat() {
 			"Error destroying matrix");
 }
 
+CppPetscMat::CppPetscMat(Index ny, Index nAx) {
+	safeCall(
+			MatCreateAIJ(PETSC_COMM_WORLD, ny, nAx, PETSC_DETERMINE, PETSC_DETERMINE, 0, 0, PETSC_NULL, PETSC_NULL, &data),
+			"Error creating matrix");
+}
+
+CppPetscMat::CppPetscMat(Index ny, Index nAx, Index d_nz, Index o_nz) {
+	safeCall(
+				MatCreateAIJ(PETSC_COMM_WORLD, ny, nAx, PETSC_DETERMINE, PETSC_DETERMINE, d_nz, PETSC_NULL, o_nz, PETSC_NULL, &data),
+				"Error creating matrix");
+}
+
+CppPetscMat::CppPetscMat(Index ny, Index nAx, const std::vector<Index>& d_nnz,
+		const std::vector<Index>& o_nnz) {
+	if (d_nnz.size() != ny) safeCall(99, "d_nnz vector has the wrong size");
+	if (o_nnz.size() != ny) safeCall(99, "o_nnz vector has the wrong size");
+	safeCall(
+				MatCreateAIJ(PETSC_COMM_WORLD, ny, nAx, PETSC_DETERMINE, PETSC_DETERMINE, 0, &d_nnz[0], 0, &o_nnz[0], &data),
+				"Error creating matrix");
+}
+
+void CppPetscMat::size(Index& M, Index& N) {
+	MatGetSize(data, &M, &N);
+}
+
+void CppPetscMat::getOwnershipRange(Index& lo, Index& hi) {
+	MatGetOwnershipRange(data, &lo, &hi);
+}
+
+
+
+

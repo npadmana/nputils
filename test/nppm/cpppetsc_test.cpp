@@ -297,6 +297,72 @@ TEST(npForEach, Test3) {
 	npForEach(v3, [](CppPetscVec::Value x) {EXPECT_DOUBLE_EQ(1.14, x);});
 }
 
+TEST(CppPetscMat, AllocNull) {
+	EXPECT_NO_THROW({
+		CppPetscMat m1;
+	});
+}
+
+TEST(CppPetscMat, Alloc1) {
+	EXPECT_NO_THROW({
+		CppPetscMat m1(10,5);
+	});
+}
+
+TEST(CppPetscMat, Alloc2) {
+	EXPECT_NO_THROW({
+		CppPetscMat m1(10,5,1,1);
+	});
+}
+
+
+TEST(CppPetscMat, Alloc3) {
+	std::vector<CppPetscMat::Index> d_nnz(10), o_nnz(10);
+	for (auto &i : d_nnz) i=1;
+	for (auto &i : o_nnz) i=1;
+	EXPECT_NO_THROW({
+		CppPetscMat m1(10,5, d_nnz, o_nnz);
+	});
+}
+
+TEST(CppPetscMat, Size1) {
+	int size;
+	MPI_Comm_size(PETSC_COMM_WORLD, &size);
+	CppPetscMat::Index M, N;
+	const int ny = 5; const int nAx = 8;
+	CppPetscMat m1(ny, nAx);
+	m1.size(M, N);
+	EXPECT_EQ(ny*size, M);
+	EXPECT_EQ(nAx*size, N);
+}
+
+
+TEST(CppPetscMat, Size2) {
+	int size;
+	MPI_Comm_size(PETSC_COMM_WORLD, &size);
+	CppPetscMat::Index M, N;
+	const int ny = 5; const int nAx = 8;
+	CppPetscMat m1(ny, nAx, 1, 2);
+	m1.size(M, N);
+	EXPECT_EQ(ny*size, M);
+	EXPECT_EQ(nAx*size, N);
+}
+
+TEST(CppPetscMat, OwnershipRange1) {
+	int rank;
+	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+	CppPetscMat::Index lo, hi;
+	const int ny = 5; const int nAx = 8;
+	CppPetscMat m1(ny, nAx);
+	m1.getOwnershipRange(lo, hi);
+	EXPECT_EQ(ny*rank, lo);
+	EXPECT_EQ(lo+ny, hi);
+}
+
+
+
+
+
 int main(int argc, char **argv) {
 	safeCall(PetscInitialize(&argc,&argv,(char *) 0, PETSC_NULL), "Error initializing");
 	::testing::InitGoogleTest(&argc, argv);

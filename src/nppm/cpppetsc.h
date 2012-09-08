@@ -279,8 +279,13 @@ public :
 	 *
 	 * No pre-allocation is done in this case.
 	 *
-	 * ???
+	 * The matrix is assumed to have dimensions for the matrix-vector product y=Ax
+	 *
+	 * @param  ny (Index) local number of rows for the vector y in y=Ax
+	 * @param  nAx (Index) local number of rows for the the vector x in y=Ax
 	 */
+	CppPetscMat(Index ny, Index nAx);
+
 
 	/** Constructor
 	 *
@@ -290,8 +295,17 @@ public :
 	 *
 	 * It also allows specifying the number of non-zero elements in the
 	 * "diagonal" and "off-diagonal matrices" (assumed to be the same for every row)
-	 * ???
+	 *
+	 * The matrix is assumed to have dimensions for the matrix-vector product y=Ax
+	 *
+	 * @param  ny (Index) local number of rows for the vector y in y=Ax
+	 * @param  nAx (Index) local number of rows for the the vector x in y=Ax
+	 * @param  d_nz (Index) number of nonzero elts per row (same for all rows) in the diagonal part
+	 * @param  o_nz (Index) number of nonzero elts per row (same for all rows) in the off-diagonal part
+	 *
+	 * Read the PETSC documentation for definitions of d_nz and o_nz.
 	 */
+	CppPetscMat(Index ny, Index nAx, Index d_nz, Index o_nz);
 
 
 	/** Constructor
@@ -302,9 +316,46 @@ public :
 	 *
 	 * It also allows specifying the number of non-zero elements per row in the
 	 * "diagonal" and "off-diagonal matrices".
-	 * ???
+	 *
+	 * The matrix is assumed to have dimensions for the matrix-vector product y=Ax
+	 *
+	 * @param  ny (Index) local number of rows for the vector y in y=Ax
+	 * @param  nAx (Index) local number of rows for the the vector x in y=Ax
+	 * @param  d_nnz vector<Index> number of nonzero elts per row in the diagonal part
+	 * @param  o_nnz vector<Index> number of nonzero elts per row in the off-diagonal part
+	 *
+	 * Read the PETSC documentation for definitions of d_nnz and o_nnz.
+	 *
 	 */
+	CppPetscMat(Index ny, Index nAx, const std::vector<Index>& d_nnz,
+			const std::vector<Index>& o_nnz);
 
+
+
+	/* Returns the size of the matrix
+	 *
+	 * @param M (Index) [output] size of the y array
+	 * @param N (Index) [output] size of the Ax array
+	 */
+	void size(Index& M, Index& N);
+
+	/* Returns the local range of rows stored
+	 *
+	 * @param lo (Index) holds the lower row index
+	 * @param hi (Index) holds the upper range index
+	 *
+	 * The local rows are lo <= irow < hi
+	 */
+	void getOwnershipRange(Index& lo, Index& hi);
+
+
+	/* Set a single element in the matrix
+	 *
+	 * @param m (Index) : row index in the matrix
+	 * @param n (Index) : column index in the matrix
+	 * @param val (Value) : value
+	 * @param iora (InsertMode) : ADD_VALUES/INSERT_VALUES
+	 */
 
 
 private :
