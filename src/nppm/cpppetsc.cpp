@@ -156,7 +156,7 @@ CppPetscMat::~CppPetscMat() {
 
 CppPetscMat::CppPetscMat(Index ny, Index nAx) {
 	safeCall(
-			MatCreateAIJ(PETSC_COMM_WORLD, ny, nAx, PETSC_DETERMINE, PETSC_DETERMINE, 0, 0, PETSC_NULL, PETSC_NULL, &data),
+			MatCreateAIJ(PETSC_COMM_WORLD, ny, nAx, PETSC_DETERMINE, PETSC_DETERMINE, PETSC_DECIDE, PETSC_NULL, PETSC_DECIDE, PETSC_NULL, &data),
 			"Error creating matrix");
 }
 

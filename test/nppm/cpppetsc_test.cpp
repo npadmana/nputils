@@ -2,6 +2,8 @@
 #include "cpppetsc.h"
 #include "nppm_algorithms.h"
 
+#include <iostream>
+
 TEST(CppPetsc, AllocNull) {
 	EXPECT_NO_THROW({
 		CppPetscVec v1;
@@ -359,6 +361,30 @@ TEST(CppPetscMat, OwnershipRange1) {
 	EXPECT_EQ(lo+ny, hi);
 }
 
+TEST(CppPetscMat, MatMult1) {
+	typedef CppPetscMat::Index Index;
+	typedef CppPetscMat::Value Value;
+
+	CppPetscVec x(13), y(13);
+	// Set the first vector
+	x = 1.5;
+
+	// Now define a matrix
+	Index lo, hi;
+	x.getOwnershipRange(lo, hi);
+
+	CppPetscMat A(hi-lo, hi-lo);
+
+	for (Index ii = lo; ii < hi; ++ii) A.set(ii, ii, 2.0, INSERT_VALUES);
+	A.assemblyBegin();
+	A.assemblyEnd();
+
+	A.mult(x,y);
+	x *= 2.0;
+
+	EXPECT_TRUE(x==y);
+
+}
 
 
 
