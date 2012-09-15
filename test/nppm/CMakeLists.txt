@@ -14,7 +14,7 @@ set (testlist cpppetsc_test Particles_test)
 
 foreach (test1 ${testlist})
 add_executable(${test1} ${test1}.cpp)
-target_link_libraries(${test1} gtest nppm petsc npgsl m)
+target_link_libraries(${test1} gtest nppm petsc npgsl m ${CMAKE_THREAD_LIBS_INIT})
 endforeach(test1)
 
 install(TARGETS ${testlist}
