@@ -31,7 +31,7 @@ double periodic(double x, double L);
  * @return number of objects local to job "rank"
  */
 template <class IntType>
-IntType partition(IntType nobj, int size, int rank) {
+IntType np_partition(IntType nobj, int size, int rank) {
 	IntType base = nobj/size;
 	IntType remainder = nobj%size;
 
@@ -94,7 +94,7 @@ public :
 			int rank, size;
 			MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
 			MPI_Comm_size(PETSC_COMM_WORLD, &size);
-			vec.init(PETSC_DETERMINE, partition(npart, size, rank)*nfac);
+			vec.init(PETSC_DETERMINE, np_partition(npart, size, rank)*nfac);
 		} else {
 			vec.init(PETSC_DETERMINE, nlocal*nfac);
 		}

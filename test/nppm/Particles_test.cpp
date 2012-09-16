@@ -43,7 +43,7 @@ TEST(PartitionTest, Test1) {
 		for (int n1 : narr) {
 			int check=0;
 			for (int ii=0; ii< s1; ++ii)
-				check += partition(n1, s1, ii);
+				check += np_partition(n1, s1, ii);
 			EXPECT_EQ(n1, check);
 		}
 	}
