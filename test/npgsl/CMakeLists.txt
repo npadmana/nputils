@@ -1,6 +1,6 @@
 include_directories(${CMAKE_SOURCE_DIR}/src/npgsl)
 
-set (testlist npSpline_test npHistogram2d_test)
+set (testlist npSpline_test npHistogram2d_test npRandom_test)
 
 foreach (test1 ${testlist})
 add_executable(${test1} ${test1}.cpp)

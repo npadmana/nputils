@@ -9,6 +9,7 @@
 #define NPRANDOM_H_
 
 #include <gsl/gsl_rng.h>
+#include <Eigen/Core>
 
 /** Wrapper around the GSL random number generators
  *
@@ -30,6 +31,13 @@ public:
 
 	/// Returns a random number in [0,1)
 	double operator()();
+
+	/** Returns a random 3D direction
+	 *
+	 * returns Eigen::Vector3d(x,y,z)
+	 *   such that sqrt(x^2 + y^2 + z^2) = 1.
+	 */
+	Eigen::Vector3d dir3d();
 
 private :
 	// Disable copy and assignment
