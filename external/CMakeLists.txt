@@ -63,8 +63,8 @@ ExternalProject_Add(
     URL ${CMAKE_SOURCE_DIR}/external/boost_1_50_0.tar.gz
     BUILD_IN_SOURCE 1
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/local/boost_1_50_0
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
+    CONFIGURE_COMMAND <SOURCE_DIR>/bootstrap.sh --with-libraries=math,regex,random,iostreams,filesystem,program_options --prefix=${CMAKE_SOURCE_DIR}/local
+    BUILD_COMMAND <SOURCE_DIR>/b2 install
     INSTALL_COMMAND ""
 )
 
