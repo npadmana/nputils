@@ -1,8 +1,8 @@
 set(CMAKE_CXX_FLAGS -std=c++11)
 
 # Libraries
-add_library(npio SHARED npTextFile.cpp zlib.cpp gzip.cpp)
-target_link_libraries(npio z)
+add_library(npio SHARED npTextFile.cpp)
+target_link_libraries(npio boost_iostreams z)
 
 #executables
 add_executable(fits_liststruc fits_liststruc.c)
