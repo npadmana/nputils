@@ -17,3 +17,6 @@ set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install)
 # Now build all the various source pieces
 add_subdirectory(src)
 add_subdirectory(test)
+
+# add in codes
+add_subdirectory(codes)
