@@ -1,4 +1,4 @@
-add_library(npgsl SHARED npSpline.cpp npRandom.cpp npHistogram2d.cpp)
+add_library(npgsl SHARED npSpline.cpp npRandom.cpp npHistogram2D.cpp)
 target_link_libraries(npgsl gsl gslcblas m)
 
 install(FILES npSpline.h npRandom.h npHistogram2D.h DESTINATION include)
