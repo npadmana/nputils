@@ -9,6 +9,8 @@
 #define NPRANDOM_H_
 
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_qrng.h>
+#include <vector>
 #include <Eigen/Core>
 
 /** Wrapper around the GSL random number generators
@@ -50,5 +52,46 @@ private :
 
 
 };
+
+/** Wrapper around the GSL quasi-random number generators
+ *
+ *  The default here is the Niederreiter sequence, but Sobol, Halton, and
+ *  reverse Halton sequences are also available.
+ *
+ *  These are gsl_qrng_niederreiter_2, gsl_qrng_sobol, gsl_qrng_halton, and
+ *  gsl_qrng_reversehalton.
+ *
+ *  NOTE : This class cannot be copied or assigned.
+ */
+class npQuasiRandom {
+public:
+
+	/** Constructor
+	 *
+	 * @param dim (int)
+	 */
+	npQuasiRandom(int _dim, const gsl_qrng_type *type= gsl_qrng_niederreiter_2);
+
+	/// Destructor
+	~npQuasiRandom();
+
+	/// Returns the next quasi-random number in [0,1)^dim
+	std::vector<double> operator()();
+
+private :
+	// Disable copy and assignment
+	npQuasiRandom(const npQuasiRandom& x);
+	npQuasiRandom& operator=(const npQuasiRandom& x);
+
+	// Random number engine
+	gsl_qrng *qran;
+
+	// Dimension
+	int dim;
+};
+
+
+
+
 
 #endif /* NPRANDOM_H_ */

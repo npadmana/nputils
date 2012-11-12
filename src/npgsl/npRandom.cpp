@@ -28,3 +28,19 @@ Eigen::Vector3d npRandom::dir3d() {
 	out << x,y,z;
 	return out;
 }
+
+npQuasiRandom::npQuasiRandom(int _dim, const gsl_qrng_type* type) {
+	dim = _dim;
+	qran = gsl_qrng_alloc(type, _dim);
+}
+
+npQuasiRandom::~npQuasiRandom() {
+	gsl_qrng_free(qran);
+}
+
+std::vector<double> npQuasiRandom::operator ()() {
+	std::vector<double> vec(dim);
+	gsl_qrng_get(qran, &vec[0]);
+	return vec;
+}
+
