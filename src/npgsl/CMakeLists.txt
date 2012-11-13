@@ -8,3 +8,5 @@ install(TARGETS npgsl
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
 )
+
+

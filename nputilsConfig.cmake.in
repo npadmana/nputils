@@ -1,0 +1,7 @@
+# Be clever about directories
+get_filename_component(NPUTILS_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+# Build tree settings
+include("${NPUTILS_CMAKE_DIR}/nputilsBuildTreeSettings.cmake")
+# Our library dependencies (contains definitions for IMPORTED targets)
+include("${NPUTILS_CMAKE_DIR}/nputilsLibraryDepends.cmake")
+ 

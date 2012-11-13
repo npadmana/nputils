@@ -1,0 +1,10 @@
+set(NPUTILS_INCLUDE_DIRS
+  "@PROJECT_SOURCE_DIR@"
+  "@PROJECT_BINARY_DIR@"
+  "@PROJECT_SOURCE_DIR@/local/include"
+  "@PROJECT_SOURCE_DIR@/local/include/eigen3")
+  
+set(NPUTILS_LINK_DIRS
+	"@PROJECT_SOURCE_DIR@/local/lib"
+	)
+	

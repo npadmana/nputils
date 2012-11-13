@@ -20,3 +20,18 @@ add_subdirectory(test)
 
 # add in codes
 add_subdirectory(codes)
+
+
+#------------------------------------------------
+# Make this generally available for outside codes
+export(PACKAGE nputils)
+
+export(TARGETS npgsl  FILE "${PROJECT_BINARY_DIR}/nputilsLibraryDepends.cmake")
+
+# Create a nputilsBuildTreeSettings.cmake file for the use from the build tree
+configure_file(nputilsBuildTreeSettings.cmake.in
+  "${PROJECT_BINARY_DIR}/nputilsBuildTreeSettings.cmake" @ONLY)
+
+configure_file(nputilsConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/nputilsConfig.cmake" @ONLY)  
+  
