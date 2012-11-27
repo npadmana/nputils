@@ -34,6 +34,13 @@ public:
 	/// Returns a random number in [0,1)
 	double operator()();
 
+	/** Fill an n-dimensional vector with random numbers in [0,1)
+	 *
+	 * @param n (integer)
+	 *   returns vector<double>
+	 */
+	std::vector<double> operator()(int n);
+
 	/** Returns a random 3D direction
 	 *
 	 * returns Eigen::Vector3d(x,y,z)

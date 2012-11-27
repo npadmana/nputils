@@ -44,3 +44,10 @@ std::vector<double> npQuasiRandom::operator ()() {
 	return vec;
 }
 
+std::vector<double> npRandom::operator ()(int n) {
+	std::vector<double> out(n);
+	for (double &x : out) x=gsl_rng_uniform(ran);
+	return out;
+}
+
+

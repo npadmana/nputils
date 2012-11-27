@@ -9,3 +9,10 @@ TEST(Random, Dir3d) {
 		EXPECT_DOUBLE_EQ(1.0, vec.norm());
 	}
 }
+
+
+TEST(Random, FillVector) {
+	npRandom ran1(100);
+	std::vector<double> out = ran1(10);
+	EXPECT_EQ(10, out.size());
+}
