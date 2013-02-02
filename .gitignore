@@ -16,3 +16,4 @@ install
 
 # OS X specific files
 .DS_Store
+/.ptp-sync
